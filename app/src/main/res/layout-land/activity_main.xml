@@ -85,35 +85,29 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
-            android:text="@string/m20.btn_menu1" />
+            android:text="@string/m20.btn_menu_fav" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
-            android:text="@string/m20.btn_menu2" />
+            android:text="@string/m20.btn_menu_later" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
-            android:text="@string/m20.btn_menu3" />
+            android:text="@string/m20.btn_menu_casts" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
-            android:text="@string/m20.btn_menu4" />
+            android:text="@string/m20.btn_menu_settings" />
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?selectableItemBackgroundBorderless"
-            android:text="@string/m20.btn_menu5" />
     </LinearLayout>
 
     <FrameLayout

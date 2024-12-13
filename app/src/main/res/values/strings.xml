@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Filmoteka</string>
     <string name="m20.disclaimer">Картинки взяты с https://www.movieposters.com/</string>
-    <string name="m20.btn_menu1">Меню</string>
-    <string name="m20.btn_menu2">Избранное</string>
-    <string name="m20.btn_menu3">Посмотреть позже</string>
-    <string name="m20.btn_menu4">Подборки</string>
-    <string name="m20.btn_menu5">Настройки</string>
+    <string name="m20.btn_menu_night">Ночь/день</string>
+    <string name="m20.btn_menu_fav">Избранное</string>
+    <string name="m20.btn_menu_later">Посмотреть позже</string>
+    <string name="m20.btn_menu_casts">Подборки</string>
+    <string name="m20.btn_menu_settings">Настройки</string>
 </resources>
