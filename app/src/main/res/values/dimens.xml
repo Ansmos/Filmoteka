@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="m20.h.top_card_view">100dp</dimen>
+    <dimen name="m20.layout_margin.top_card_view">10dp</dimen>
+    <dimen name="m20.r.top_card_corner">15dp</dimen>
+    <dimen name="m20.w.button_container">300dp</dimen>
+</resources>
