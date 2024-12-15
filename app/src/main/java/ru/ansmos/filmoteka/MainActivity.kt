@@ -1,8 +1,11 @@
 package ru.ansmos.filmoteka
 
+import android.animation.ObjectAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,6 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initTopAppBar()
         initBottomNavigationView()
+        findViewById<ImageView>(R.id.poster_1).setOnClickListener{
+            animatePosterClick(it)
+        }
     }
 
     private fun initTopAppBar() {
@@ -58,5 +64,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }    }
+        }
+    }
+
+    fun animatePosterClick(sender: View){
+        if (sender.id )
+        val anim = ObjectAnimator.ofFloat(sender, View.ALPHA, 1F, 0.5F  )
+        anim.duration = 800
+
+    }
 }
