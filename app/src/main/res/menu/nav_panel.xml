@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fav"
+        android:icon="@drawable/ic_favorite_24"
+        android:title="@string/m20.btn_menu_fav"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/later"
+        android:icon="@drawable/ic_btn_later"
+        android:title="@string/m20.btn_menu_later"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/casts"
+        android:icon="@drawable/ic_btn_casts_24"
+        android:title="@string/m20.btn_menu_casts"
+        app:showAsAction="withText"/>
+</menu>
