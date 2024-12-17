@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,8 @@ import ru.ansmos.filmoteka.rw.FilmAdapter
 
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
+    private var backPressed = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,6 +43,30 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.fragment_placeholder, fragment)
             .addToBackStack(null).commit()
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            // Если уложильсь в TIME_INTERVAL_DBL_CLICK, то покажем диалог
+            if (backPressed + TIME_INTERVAL_DBL_CLICK > System.currentTimeMillis()) {
+                AlertDialog.Builder(this)
+                    .setTitle("Вы хотите выйти?")
+                    .setIcon(R.drawable.ic_baseline_question_24)
+                    .setPositiveButton("Да") { _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton("Нет") { _, _ ->
+                    }
+                    .show()
+            } else {
+                Toast.makeText(applicationContext, R.string.m25_exit_dbl_click, Toast.LENGTH_SHORT).show()
+            }
+            //Запомним время предудущего клика
+            backPressed = System.currentTimeMillis()
+        } else {
+            super.onBackPressed()
+        }
+
     }
 
     private fun initTopAppBar() {
@@ -99,5 +126,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    companion object consts{
+        const val TIME_INTERVAL_DBL_CLICK = 2000  //В этот интервал нужно дважды щелкнуть для выхлда. Можно сократить)))
     }
 }
