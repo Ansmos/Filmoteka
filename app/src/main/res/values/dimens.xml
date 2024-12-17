@@ -4,4 +4,12 @@
     <dimen name="m20.layout_margin.top_card_view">10dp</dimen>
     <dimen name="m20.r.top_card_corner">15dp</dimen>
     <dimen name="m20.w.button_container">300dp</dimen>
+
+    <dimen name="m24.h.appbar.layout">200dp</dimen>
+    <dimen name="m24.h.appbar.collapsing_toolbar_layout">60dp</dimen>
+    <dimen name="m24.layout_margin.fab1">16dp</dimen>
+    <dimen name="m24.layout_margin.fab2">86dp</dimen>
+    <dimen name="m24.layout_margin.fab3">156dp</dimen>
+    <dimen name="m24.layout_margin.text">8dp</dimen>
+
 </resources>
