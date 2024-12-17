@@ -7,4 +7,6 @@
     <string name="m20.btn_menu_casts">Подборки</string>
     <string name="m20.btn_menu_settings">Настройки</string>
     <string name="m20.btn_menu_share">Поделиться</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
