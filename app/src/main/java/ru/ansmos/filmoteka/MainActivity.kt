@@ -1,5 +1,6 @@
 package ru.ansmos.filmoteka
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -33,8 +34,18 @@ class MainActivity : AppCompatActivity() {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
             //оставим его пока пустым, он нам понадобится во второй части задания
             filmsAdapter = FilmAdapter(object : FilmAdapter.IOnItemClixkListener{
-                override fun click(film: Film, position: Int) {
-
+                override fun click(film: Film) {
+                    //Создаем бандл и кладем туда объект с данными фильма
+                    val bundle = Bundle()
+                    //Первым параметром указывается ключ, по которому потом будем искать, вторым сам
+                    //передаваемый объект
+                    bundle.putParcelable("film", film)
+                    //Запускаем наше активити
+                    val intent = Intent(this@MainActivity, DetailsActivity::class.java)
+                    //Прикрепляем бандл к интенту
+                    intent.putExtras(bundle)
+                    //Запускаем активити через интент
+                    startActivity(intent)
                 }
             })
             adapter = filmsAdapter

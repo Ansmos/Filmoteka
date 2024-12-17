@@ -3,6 +3,7 @@ package ru.ansmos.filmoteka.rw
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.db.Film
@@ -25,6 +26,12 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
                 //Вызываем метод bind(), который мы создали, и передаем туда объект
                 //из нашей базы данных с указанием позиции
                 holder.bund(items[position])
+                //Обрабатываем нажатие на весь элемент целиком(можно сделать на отдельный элемент
+                //например, картинку) и вызываем метод нашего листенера, который мы получаем из
+                //конструктора адаптера
+                holder.itemView.findViewById<CardView>(R.id.item_container).setOnClickListener{
+                    clickListener.click(items[position])
+                }
             }
         }
     }
@@ -42,7 +49,7 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
 
     //Интерфейс для обработки кликов
     interface IOnItemClixkListener{
-        fun click(film: Film, position: Int)
+        fun click(film: Film)
     }
 
 }
