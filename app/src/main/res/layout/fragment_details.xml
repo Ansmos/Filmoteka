@@ -51,11 +51,11 @@
         android:id="@+id/fav_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/m24.layout_margin.fab3"
-        android:backgroundTint="@color/teal_200"
+        android:layout_margin="@dimen/m24.layout_margin.fab1"
+        android:backgroundTint="@color/colorAccent"
         app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right"
-        app:srcCompat="@drawable/ic_favorite_24"
+        app:layout_anchorGravity="bottom|left"
+        app:srcCompat="@drawable/ic_favorite_border_24"
         android:tint="@android:color/white"
         android:accessibilityPaneTitle="@string/m20.btn_menu_fav">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
