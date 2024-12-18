@@ -6,4 +6,9 @@
     <string name="m20.btn_menu_later">Посмотреть позже</string>
     <string name="m20.btn_menu_casts">Подборки</string>
     <string name="m20.btn_menu_settings">Настройки</string>
+    <string name="m20.btn_menu_share">Поделиться</string>
+    <string name="m25.exit_alert">Закрыть приложение ?</string>
+    <string name="m25.exit_dbl_click">Для выхода щелкните дважды.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
