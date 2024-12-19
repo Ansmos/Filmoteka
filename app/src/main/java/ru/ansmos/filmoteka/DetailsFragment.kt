@@ -1,5 +1,6 @@
 package ru.ansmos.filmoteka
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,15 +18,15 @@ import com.google.android.material.snackbar.Snackbar
 import ru.ansmos.filmoteka.db.Film
 
 class DetailsFragment : Fragment() {
-
+    lateinit var film: Film
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        film = arguments?.get("film") as Film
         initFabs()
-        val film = arguments?.get("film") as Film
         requireActivity().findViewById<Toolbar>(R.id.details_toolbar).title = film.title
         requireActivity().findViewById<AppCompatImageView>(R.id.details_poster).setImageResource(film.poster)
         requireActivity().findViewById<TextView>(R.id.details_description).text = film.description
@@ -49,6 +50,37 @@ class DetailsFragment : Fragment() {
                 }
             }
         }
+
+        requireActivity().findViewById<FloatingActionButton>(R.id.fav_fab).apply {
+            setImageResource(
+                if (film.isInFavorites)
+                    R.drawable.ic_favorite_24
+                else
+                    R.drawable.ic_favorite_border_24
+            )
+            setOnClickListener {
+                if (!film.isInFavorites){
+                    (it as FloatingActionButton).setImageResource(R.drawable.ic_favorite_24)
+                    film.isInFavorites = true
+                } else {
+                    (it as FloatingActionButton).setImageResource(R.drawable.ic_favorite_border_24)
+                    film.isInFavorites = false
+                }
+            }
+        }
+        requireActivity().findViewById<FloatingActionButton>(R.id.share_fab).setOnClickListener {
+            //Создаем интент
+            val intent = Intent()
+            //Указываем action с которым он запускается
+            intent.action = Intent.ACTION_SEND
+            //Кладем данные о нашем фильме
+            intent.putExtra(Intent.EXTRA_TEXT,"Посмотри это: ${film.title} \n\n ${film.description}")
+            //Указываем MIME тип, чтобы система знала, какое приложения предложить
+            intent.type = "text/plain"
+            //Запускаем наше активити
+            startActivity(Intent.createChooser(intent, "Отправить к:"))
+        }
+
 
     }
 }
