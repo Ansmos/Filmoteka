@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initDB()
-        initTopAppBar()
         initBottomNavigationView()
         //Запускаем фрагмент при старте
         supportFragmentManager
@@ -69,32 +68,6 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
 
-    }
-
-    private fun initTopAppBar() {
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        topAppBar.setNavigationOnClickListener {
-            Toast.makeText(this, "Когда-нибудь здесь будет навигация...", Toast.LENGTH_SHORT).show()
-        }
-        topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.settings -> {
-                    Toast.makeText(
-                        this,
-                        resources.getString(R.string.m20_btn_menu_settings),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    true
-                }
-                R.id.night -> {
-                    darkMode =
-                        if (darkMode != AppCompatDelegate.MODE_NIGHT_YES) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-                    AppCompatDelegate.setDefaultNightMode(darkMode)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     fun initBottomNavigationView() {

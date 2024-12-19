@@ -6,9 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.rw.FilmAdapter
@@ -17,7 +20,6 @@ import java.util.*
 class HomeFragment : Fragment() {
 
     private lateinit var filmsAdapter: FilmAdapter
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
