@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
     private var backPressed = 0L
     lateinit var filmsDataBase : List<Film>
+    var firstStart: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
