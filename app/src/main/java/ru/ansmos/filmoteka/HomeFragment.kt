@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.google.android.material.appbar.MaterialToolbar
 import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.decor.AnimationHelper
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.rw.FilmAdapter
 import java.util.*
@@ -36,7 +37,7 @@ class HomeFragment : Fragment() {
         initAnimationEnter()
         initSearchView()
         initRV()
-
+        AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
     }
 
     private fun initAnimationEnter() {

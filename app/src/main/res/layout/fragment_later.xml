@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fav_fragment_root"
+    android:id="@+id/later_fragment_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="invisible"
-    android:background="@drawable/background_fav_fragment"
+    android:background="@drawable/background_later_fragment"
     tools:visibility="visible"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".FavoriteFragment">
+    tools:context=".LaterFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorites_recycler"
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/film_item"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
