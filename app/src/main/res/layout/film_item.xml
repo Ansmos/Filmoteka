@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.cardview.widget.CardView
     android:id="@+id/item_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,6 +14,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ru.ansmos.filmoteka.decor.RatingDonutView
+            android:id="@+id/rating_donut"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:translationZ="11dp"
+            app:stroke="10"
+            app:progress="75"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </ru.ansmos.filmoteka.decor.RatingDonutView>
 
         <ImageView
             android:id="@+id/poster"
