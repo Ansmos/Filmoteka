@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.decor.AnimationHelper
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.rw.FilmAdapter
 
@@ -41,6 +42,7 @@ class FavoriteFragment : Fragment() {
         filmsAdapter.addItems((requireActivity() as MainActivity).filmsDataBase.filter{
             it.isInFavorites
         })
+        AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.fav_fragment_root), requireActivity(), 2)
 
     }
 }

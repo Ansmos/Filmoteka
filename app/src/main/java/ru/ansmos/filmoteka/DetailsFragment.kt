@@ -2,6 +2,7 @@ package ru.ansmos.filmoteka
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +14,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.transition.Fade
+import androidx.transition.Slide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import ru.ansmos.filmoteka.db.Film
 
 class DetailsFragment : Fragment() {
     lateinit var film: Film
+
+    init {
+        enterTransition = Slide(Gravity.END).apply { duration = 500 }
+        returnTransition = Fade() //Slide(Gravity.END).apply { duration = 500; mode = Slide.MODE_OUT }
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }

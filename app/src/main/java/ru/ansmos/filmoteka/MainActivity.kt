@@ -3,33 +3,65 @@ package ru.ansmos.filmoteka
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.airbnb.lottie.LottieAnimationView
+import com.bumptech.glide.request.transition.ViewPropertyTransition.Animator
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.rw.FilmAdapter
+import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
     private var backPressed = 0L
     lateinit var filmsDataBase : List<Film>
+    var firstStart: Boolean = true
+    var defaultFragmentTag: String = ""
+    var previoustFragmentTag: String = ""  //Для фракмента с деталями, неизвестно, из какого фрагмента он вызван
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initDB()
         initBottomNavigationView()
-        //Запускаем фрагмент при старте
+        //Запускаем анимацию при старте
+        val lottieAnimationView: LottieAnimationView = findViewById(R.id.lottie_anim)
+        lottieAnimationView.addAnimatorListener(object : android.animation.Animator.AnimatorListener{
+            override fun onAnimationStart(animation: android.animation.Animator?) {
+            }
+            override fun onAnimationEnd(animation: android.animation.Animator?) {
+                lottieAnimationView.visibility = View.GONE
+                // запускаем фрагмент при окончании анимации
+                changeFragment(HomeFragment(), "home")
+            }
+            override fun onAnimationCancel(animation: android.animation.Animator?) {
+            }
+            override fun onAnimationRepeat(animation: android.animation.Animator?) {
+            }
+        })
+        lottieAnimationView.playAnimation()
+    }
+
+    private fun checkFragmentExistance(tag: String): Fragment? = supportFragmentManager.findFragmentByTag(tag)
+
+    private fun changeFragment(fragment: Fragment, tag: String){
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragment_placeholder, HomeFragment())
+            .replace(R.id.fragment_placeholder, fragment, tag)
             .addToBackStack(null).commit()
+        previoustFragmentTag = defaultFragmentTag
+        defaultFragmentTag = tag
     }
 
     fun launchDetailsFragment(film: Film){
@@ -44,28 +76,36 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.fragment_placeholder, fragment)
             .addToBackStack(null).commit()
+        previoustFragmentTag = defaultFragmentTag
+        defaultFragmentTag = "details"
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount == 1) {
-            // Если уложильсь в TIME_INTERVAL_DBL_CLICK, то покажем диалог
-            if (backPressed + TIME_INTERVAL_DBL_CLICK > System.currentTimeMillis()) {
-                AlertDialog.Builder(this)
-                    .setTitle("Вы хотите выйти?")
-                    .setIcon(R.drawable.ic_baseline_question_24)
-                    .setPositiveButton("Да") { _, _ ->
-                        finish()
-                    }
-                    .setNegativeButton("Нет") { _, _ ->
-                    }
-                    .show()
-            } else {
-                Toast.makeText(applicationContext, R.string.m25_exit_dbl_click, Toast.LENGTH_SHORT).show()
-            }
-            //Запомним время предудущего клика
-            backPressed = System.currentTimeMillis()
-        } else {
+        Log.i("back", supportFragmentManager.backStackEntryCount.toString() + " - " + defaultFragmentTag + " : " + previoustFragmentTag)
+
+        if (defaultFragmentTag == "home"){
+            //if (supportFragmentManager.backStackEntryCount >= 1) // Оставил на память, не ругаться.
+                // Если уложильсь в TIME_INTERVAL_DBL_CLICK, то покажем диалог
+                if (backPressed + TIME_INTERVAL_DBL_CLICK > System.currentTimeMillis()) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Вы хотите выйти?")
+                        .setIcon(R.drawable.ic_baseline_question_24)
+                        .setPositiveButton("Да") { _, _ ->
+                            finishAndRemoveTask()
+                        }
+                        .setNegativeButton("Нет") { _, _ ->
+                        }
+                        .show()
+                } else {
+                    Toast.makeText(applicationContext, R.string.m25_exit_dbl_click, Toast.LENGTH_SHORT).show()
+                }
+                //Запомним время предудущего клика
+                backPressed = System.currentTimeMillis()
+        }
+        if (defaultFragmentTag == "details") {
             super.onBackPressed()
+            // Возвращаем тот фрагмент, из которого был вызван details
+            defaultFragmentTag = previoustFragmentTag
         }
 
     }
@@ -74,27 +114,28 @@ class MainActivity : AppCompatActivity() {
         val bottom_navigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.home ->{
+                    val tag = "home"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: HomeFragment(), tag)
+                    true
+                }
                 R.id.fav -> {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragment_placeholder, FavoriteFragment())
-                        .addToBackStack(null).commit()
+                    val tag = "fav"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: FavoriteFragment(), tag)
                     true
                 }
                 R.id.later -> {
-                    Toast.makeText(
-                        this,
-                        resources.getString(R.string.m20_btn_menu_later),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val tag = "later"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: LaterFragment(), tag)
                     true
                 }
                 R.id.casts -> {
-                    Toast.makeText(
-                        this,
-                        resources.getString(R.string.m20_btn_menu_casts),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val tag = "casts"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: CastsFragment(), tag)
                     true
                 }
                 else -> false
