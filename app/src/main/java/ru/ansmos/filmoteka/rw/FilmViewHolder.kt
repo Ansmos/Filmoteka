@@ -1,12 +1,16 @@
 package ru.ansmos.filmoteka.rw
 
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.decor.AnimationHelper
 import ru.ansmos.filmoteka.decor.RatingDonutView
 
 //В конструктор класс передается layout, который мы создали(film_item.xml)
@@ -32,7 +36,15 @@ class FilmViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemV
         desc.text = film.description
         //Устанавливаем рэйтинг
         ratingDonut.setProgress((film.rating * 10).toInt())
+
         if (film.rating != 0f) {
+            // Добавим анимацию появления
+            val anim = AlphaAnimation(0f, 1f).apply {
+                duration = 3000
+                interpolator = AccelerateDecelerateInterpolator()
+                fillAfter = true
+            }
+            ratingDonut.startAnimation(anim)
             ratingDonut.visibility = View.VISIBLE
         } else {
             ratingDonut.visibility = View.INVISIBLE

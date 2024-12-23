@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onAnimationEnd(animation: android.animation.Animator?) {
                 lottieAnimationView.visibility = View.GONE
+
                 // запускаем фрагмент при окончании анимации
                 changeFragment(HomeFragment(), "home")
             }
