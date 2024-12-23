@@ -13,4 +13,15 @@
     <dimen name="m24.layout_margin.fab3">156dp</dimen>
     <dimen name="m24.layout_margin.text">8dp</dimen>
 
+    <dimen name="m31.h.item_rv">150dp</dimen>
+    <dimen name="m31.elev.item_rv">1dp</dimen>
+    <dimen name="m31.trsl_z.item_rv">5dp</dimen>
+    <dimen name="m31.h.item_rv.image">150dp</dimen>
+    <dimen name="m31.w.item_rv.image">150dp</dimen>
+    <dimen name="m31.p.item_rv.text">8dp</dimen>
+
+    <dimen name="m31.h.rating_donut">50dp</dimen>
+    <dimen name="m31.w.rating_donut">50dp</dimen>
+    <dimen name="m31.trsl_z.rating_donut">11dp</dimen>
+
 </resources>
