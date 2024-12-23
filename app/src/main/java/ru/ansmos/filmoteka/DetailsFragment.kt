@@ -18,9 +18,12 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
+import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
 import ru.ansmos.filmoteka.db.Film
 
 class DetailsFragment : Fragment() {
+    private lateinit var binding : FragmentDetailsBinding
     lateinit var film: Film
 
     init {
@@ -28,7 +31,8 @@ class DetailsFragment : Fragment() {
         returnTransition = Fade() //Slide(Gravity.END).apply { duration = 500; mode = Slide.MODE_OUT }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+        binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

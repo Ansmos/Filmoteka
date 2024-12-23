@@ -1,5 +1,6 @@
 package ru.ansmos.filmoteka
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.request.transition.ViewPropertyTransition.Animator
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import ru.ansmos.filmoteka.databinding.ActivityMainBinding
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.rw.FilmAdapter
@@ -24,6 +26,7 @@ import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
+    private lateinit var binding: ActivityMainBinding
     private var backPressed = 0L
     lateinit var filmsDataBase : List<Film>
     var firstStart: Boolean = true
@@ -32,7 +35,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        //Передаем его в метод
+        setContentView(binding.root)
         initDB()
         initBottomNavigationView()
         //Запускаем анимацию при старте
@@ -81,8 +86,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        Log.i("back", supportFragmentManager.backStackEntryCount.toString() + " - " + defaultFragmentTag + " : " + previoustFragmentTag)
-
         if (defaultFragmentTag == "home"){
             //if (supportFragmentManager.backStackEntryCount >= 1) // Оставил на память, не ругаться.
                 // Если уложильсь в TIME_INTERVAL_DBL_CLICK, то покажем диалог
@@ -111,8 +114,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initBottomNavigationView() {
-        val bottom_navigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottom_navigation.setOnNavigationItemSelectedListener {
+        binding.bottomNavigation?.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.home ->{
                     val tag = "home"

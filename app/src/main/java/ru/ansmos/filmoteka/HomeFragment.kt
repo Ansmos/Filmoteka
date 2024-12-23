@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.google.android.material.appbar.MaterialToolbar
+import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
+import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.decor.AnimationHelper
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
@@ -21,7 +23,7 @@ import ru.ansmos.filmoteka.rw.FilmAdapter
 import java.util.*
 
 class HomeFragment : Fragment() {
-
+    private lateinit var binding : FragmentHomeBinding
     private lateinit var filmsAdapter: FilmAdapter
 
     init {
@@ -29,7 +31,8 @@ class HomeFragment : Fragment() {
         reenterTransition = Slide(Gravity.START).apply { duration = 500; }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
