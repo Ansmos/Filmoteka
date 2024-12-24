@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.cardview.widget.CardView
     android:id="@+id/item_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:elevation="1dp"
-    app:cardCornerRadius="10dp">
+    android:layout_height="@dimen/m31.h.item_rv"
+    android:elevation="@dimen/m31.elev.item_rv"
+    android:translationZ="@dimen/m31.trsl_z.item_rv"
+    app:cardCornerRadius="@dimen/m20.r.top_card_corner">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ru.ansmos.filmoteka.decor.RatingDonutView
+            android:id="@+id/rating_donut"
+            android:layout_width="@dimen/m31.w.rating_donut"
+            android:layout_height="@dimen/m31.h.rating_donut"
+            android:translationZ="@dimen/m31.trsl_z.rating_donut"
+            app:stroke="10"
+            app:progress="75"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </ru.ansmos.filmoteka.decor.RatingDonutView>
+
         <ImageView
             android:id="@+id/poster"
-            android:layout_width="150dp"
+            android:layout_width="@dimen/m31.w.item_rv.image"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:padding="8dp"
+            android:padding="@dimen/m31.p.item_rv.text"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             app:layout_constraintLeft_toRightOf="@+id/poster"
             app:layout_constraintRight_toRightOf="parent"
@@ -38,7 +53,7 @@
             android:id="@+id/description"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="8dp"
+            android:padding="@dimen/m31.p.item_rv.text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/poster"
             app:layout_constraintRight_toRightOf="parent"
