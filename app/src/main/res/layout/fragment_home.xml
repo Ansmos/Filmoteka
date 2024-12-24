@@ -8,7 +8,7 @@
     android:visibility="invisible"
     tools:visibility="visible"
     android:background="@drawable/background_home_fragment"
-    tools:context=".HomeFragment">
+    tools:context=".view.fragments.HomeFragment">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,12 +1,13 @@
-package ru.ansmos.filmoteka
+package ru.ansmos.filmoteka.view.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
-import ru.ansmos.filmoteka.decor.AnimationHelper
+import ru.ansmos.filmoteka.utils.AnimationHelper
 
 class CastsFragment : Fragment() {
     private lateinit var binding : FragmentCastsBinding

@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka
+package ru.ansmos.filmoteka.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +18,7 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
+import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
 import ru.ansmos.filmoteka.db.Film
 
@@ -56,7 +56,9 @@ class DetailsFragment : Fragment() {
                 snackbar.setAction("Click"){
                     Toast.makeText(requireContext(), v.accessibilityPaneTitle.toString(), Toast.LENGTH_SHORT).show()
                 }
-                snackbar.setActionTextColor(ContextCompat.getColor(requireContext(),R.color.purple_500))
+                snackbar.setActionTextColor(ContextCompat.getColor(requireContext(),
+                    R.color.purple_500
+                ))
                 v.setOnClickListener {
                     snackbar.show()
                 }

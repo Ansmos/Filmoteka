@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.decor
+package ru.ansmos.filmoteka.utils
 
 import android.app.Activity
 import android.view.View

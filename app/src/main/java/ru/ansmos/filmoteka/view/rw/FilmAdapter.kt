@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.rw
+package ru.ansmos.filmoteka.view.rw
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

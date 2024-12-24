@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.decor
+package ru.ansmos.filmoteka.view.custom
 
 import android.content.Context
 import android.graphics.Canvas
