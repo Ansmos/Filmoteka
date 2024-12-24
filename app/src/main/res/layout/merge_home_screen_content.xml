@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="@drawable/corner_background"
-            tools:context=".HomeFragment">
+            tools:context=".view.fragments.HomeFragment">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_recycler"

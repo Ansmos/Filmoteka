@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.rw
+package ru.ansmos.filmoteka.view.rw
 
 import androidx.recyclerview.widget.DiffUtil
 import ru.ansmos.filmoteka.db.Film

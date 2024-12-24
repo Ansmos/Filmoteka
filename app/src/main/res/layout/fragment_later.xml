@@ -7,7 +7,7 @@
     android:visibility="invisible"
     android:background="@drawable/background_later_fragment"
     tools:visibility="visible"
-    tools:context=".LaterFragment">
+    tools:context=".view.fragments.LaterFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

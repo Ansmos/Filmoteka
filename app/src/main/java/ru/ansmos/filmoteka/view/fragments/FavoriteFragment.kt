@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka
+package ru.ansmos.filmoteka.view.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,18 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ru.ansmos.filmoteka.view.MainActivity
+import ru.ansmos.filmoteka.R
+import ru.ansmos.filmoteka.databinding.FragmentFavoriteBinding
 import ru.ansmos.filmoteka.db.Film
-import ru.ansmos.filmoteka.decor.AnimationHelper
+import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
-import ru.ansmos.filmoteka.rw.FilmAdapter
+import ru.ansmos.filmoteka.view.rw.FilmAdapter
 
 class FavoriteFragment : Fragment() {
+    private lateinit var binding : FragmentFavoriteBinding
     private lateinit var filmsAdapter: FilmAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

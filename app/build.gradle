@@ -8,6 +8,10 @@ android {
     namespace 'ru.ansmos.filmoteka'
     compileSdk 32
 
+    buildFeatures{
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "ru.ansmos.filmoteka"
         minSdk 29

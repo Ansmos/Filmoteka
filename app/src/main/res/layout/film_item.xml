@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ru.ansmos.filmoteka.decor.RatingDonutView
+        <ru.ansmos.filmoteka.view.custom.RatingDonutView
             android:id="@+id/rating_donut"
             android:layout_width="@dimen/m31.w.rating_donut"
             android:layout_height="@dimen/m31.h.rating_donut"
@@ -26,7 +26,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-        </ru.ansmos.filmoteka.decor.RatingDonutView>
+        </ru.ansmos.filmoteka.view.custom.RatingDonutView>
 
         <ImageView
             android:id="@+id/poster"
