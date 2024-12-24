@@ -18,7 +18,19 @@ import ru.ansmos.filmoteka.view.rw.FilmAdapter
 class FavoriteFragment : Fragment() {
     private lateinit var binding : FragmentFavoriteBinding
     private lateinit var filmsAdapter: FilmAdapter
-
+    private var filmsDataBase = listOf<Film>()
+        //Используем backing field
+        set(value) {
+            //Если придет такое же значение, то мы выходим из метода
+            if (field == value) {
+                return
+            } else {
+                //Если пришло другое значение, то кладем его в переменную
+                field = value
+                //Обновляем RV адаптер
+                filmsAdapter.addItems(field)
+            }
+        }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
@@ -43,7 +55,7 @@ class FavoriteFragment : Fragment() {
             addItemDecoration(decor)
         }
         //Кладем нашу БД в RV
-        filmsAdapter.addItems((requireActivity() as MainActivity).filmsDataBase.filter{
+        filmsAdapter.addItems(filmsDataBase.filter{
             it.isInFavorites
         })
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.fav_fragment_root), requireActivity(), 2)
