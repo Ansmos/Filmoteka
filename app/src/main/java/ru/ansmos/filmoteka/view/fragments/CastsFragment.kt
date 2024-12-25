@@ -2,6 +2,7 @@ package ru.ansmos.filmoteka.view.fragments
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,18 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import okhttp3.*
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
 import ru.ansmos.filmoteka.db.FilmOMDB
+import ru.ansmos.filmoteka.db.IFilmOMDB
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import java.io.IOException
+import kotlin.math.log
 
 class CastsFragment : Fragment() {
     private lateinit var binding : FragmentCastsBinding
@@ -26,37 +34,25 @@ class CastsFragment : Fragment() {
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.casts_fragment_root), requireActivity(), 4)
 
         binding.btn.setOnClickListener {
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                .url("https://www.omdbapi.com/?i=tt3896198&apikey=49e95b95")
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://www.omdbapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
-
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        val gson = Gson()
-                        val filmOMDB = gson.fromJson(response.body()?.string(), FilmOMDB::class.java)
-                        binding.title.text =  filmOMDB.Title
-                        context?.let { it1 ->
-                            Glide.with(it1.applicationContext)
-                                //Загружаем сам ресурс
-                                .load(filmOMDB.Poster)
-
-                                //Центруем изображение
-                                .centerCrop()
-                                //Указываем ImageView, куда будем загружать изображение
-                                .into(binding.img)
-                        }
-                    } catch (e: java.lang.Exception){
-                        println(response)
-                        e.printStackTrace()
+            val service = retrofit.create(IFilmOMDB::class.java)
+            service.getFilm("tt3896198","49e95b95").enqueue(object : retrofit2.Callback<FilmOMDB>{
+                override fun onResponse(call: Call<FilmOMDB>, response: Response<FilmOMDB>) {
+                     binding.title.text = response.body()?.Title ?: "нет данных"
+                    context?.let { it1 ->
+                        Glide.with(it1)
+                            .load(response.body()?.Poster)
+                            .centerCrop()
+                            .into(binding.img)
                     }
                 }
 
+                override fun onFailure(call: Call<FilmOMDB>, t: Throwable) {
+                     t.printStackTrace()
+                }
             })
         }
     }
