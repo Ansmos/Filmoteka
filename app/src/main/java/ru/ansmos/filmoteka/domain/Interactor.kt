@@ -14,14 +14,14 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.IApiCallback) {
-        retrofitService.getFilmList(searchString, ApiKey.APIKEY).enqueue(object: Callback<OmdbFilmListDTO> {
+        retrofitService.getFilmList(searchString, page, ApiKey.APIKEY).enqueue(object: Callback<OmdbFilmListDTO> {
             override fun onResponse(call: Call<OmdbFilmListDTO>, response: Response<OmdbFilmListDTO>) {
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 callback.onSuccess(Converter.ConverterToFilmList(response.body()?.omdbFilmList))
             }
 
             override fun onFailure(call: Call<OmdbFilmListDTO>, t: Throwable) {
-                TODO("Not yet implemented")
+                t.printStackTrace()
             }
 
         })

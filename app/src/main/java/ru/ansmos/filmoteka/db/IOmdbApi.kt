@@ -13,6 +13,7 @@ interface IOmdbApi {
     @GET("/")
     fun getFilmList(
         @Query("s") id: String,
+        @Query("page") page: Int,
         @Query("apikey") key: String
     ) : Call<OmdbFilmListDTO>
 }
