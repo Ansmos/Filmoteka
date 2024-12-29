@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FilmItemBinding
@@ -44,7 +46,7 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
 
     //Метод для добавления объектов в наш список
     fun addItems(list: List<Film>){
-        items.clear()
+        //items.clear()
         items.addAll(list)
         notifyDataSetChanged()
     }
@@ -55,3 +57,6 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
     }
 
 }
+
+
+

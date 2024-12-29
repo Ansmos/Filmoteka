@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.transition.Fade
 import androidx.transition.Slide
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import ru.ansmos.filmoteka.R
@@ -39,9 +40,12 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         film = arguments?.get("film") as Film
         initFabs()
-        requireActivity().findViewById<Toolbar>(R.id.details_toolbar).title = film.title
-        requireActivity().findViewById<AppCompatImageView>(R.id.details_poster).setImageResource(film.poster)
-        requireActivity().findViewById<TextView>(R.id.details_description).text = film.description
+        binding.detailsToolbar.title = film.title
+        Glide.with(this)
+            .load(film.poster)
+            .centerCrop()
+            .into(binding.detailsPoster)
+        binding.detailsDescription.text = film.description
     }
 
     private fun initFabs() {
