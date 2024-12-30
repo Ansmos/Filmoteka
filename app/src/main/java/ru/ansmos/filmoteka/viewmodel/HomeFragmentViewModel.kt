@@ -7,16 +7,19 @@ import androidx.lifecycle.ViewModel
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.domain.Interactor
+import javax.inject.Inject
 
 class HomeFragmentViewModel: ViewModel() {
 
     val filmListLiveData = MutableLiveData<List<Film>>()
     var page: Int = 1
-    private val interactor: Interactor = App.instance.interactor
+    @Inject lateinit var interactor: Interactor
 
     init{
+        App.instance.dagger.injHomeFragment(this)
         getFilmsPage(page)
     }
+
 
     fun changePage(pageNew: Int) {
         page = pageNew
