@@ -2,9 +2,10 @@ package ru.ansmos.filmoteka.data
 
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.db.Film
+import javax.inject.Inject
 
-class MainRepository {
-    val filmsDataBase = listOf<Film>(
+class MainRepository @Inject constructor() : IRepo {
+    override val filmsDataBase = listOf<Film>(
     Film("tt3896198","Первый",
         "https://m.media-amazon.com/images/M/MV5BZWViZDRiMGYtZTlmMS00ZDM2LWIzNWUtYmNjYzBiYjJkNTk3XkEyXkFqcGc@._V1_SX300.jpg",
         "В целом все должно быть понятно, за исключением, может, поля poster. Там мы будем хранить id картинки в ресурсах, а как вы помните, они у нас в Int. Теперь наступает «творческая» часть: нужно подготовить 7–10 фильмов", "2024"),

@@ -1,13 +1,15 @@
 package ru.ansmos.filmoteka.dagger.modules
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import ru.ansmos.filmoteka.data.IRepo
 import ru.ansmos.filmoteka.data.MainRepository
 import javax.inject.Singleton
 
 @Module
-class DataBaseModule {
+abstract class DataBaseModule {
     @Singleton
-    @Provides
-    fun provideRepository() = MainRepository()
+    @Binds
+    abstract fun provideRepository(iRepo: IRepo) : IRepo
 }
