@@ -23,4 +23,11 @@
         android:icon="@drawable/ic_btn_casts_24"
         android:title="@string/m20.btn_menu_casts"
         app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_outline_settings_24"
+        android:title="@string/m20.btn_menu_settings"
+        app:showAsAction="withText"/>
+
 </menu>

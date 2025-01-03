@@ -7,9 +7,10 @@ import retrofit2.Response
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.*
 import ru.ansmos.filmoteka.utils.Converter
+import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 
-class Interactor(private val repo: MainRepository, private val retrofitService: IOmdbApi) {
+class Interactor(private val repo: MainRepository, private val retrofitService: IOmdbApi, private val preferences: PreferenceProvider) {
     fun getFilmsDB(): List<Film> = repo.filmsDataBase
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
@@ -25,6 +26,12 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
             }
 
         })
+    }
+
+    fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
+
+    fun saveDefaultCategoryToPreferences(category: String) {
+        preferences.saveDefCategory(category)
     }
 
     companion object{
