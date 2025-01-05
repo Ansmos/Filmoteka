@@ -8,6 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.ansmos.filmoteka.dagger.AppComponent
 import ru.ansmos.filmoteka.dagger.DaggerAppComponent
+import ru.ansmos.filmoteka.dagger.modules.DatabaseModule
+import ru.ansmos.filmoteka.dagger.modules.DomainModule
+import ru.ansmos.filmoteka.dagger.modules.RemoteModule
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.ApiConstants
 import ru.ansmos.filmoteka.db.IOmdbApi
@@ -24,7 +27,10 @@ class App : Application() {
         //Инициализируем экземпляр App, через который будем получать доступ к остальным переменным
         instance = this
         //Создаем компонент
-        dagger = DaggerAppComponent.create()
+        dagger = DaggerAppComponent.builder()
+            .remoteModule(RemoteModule())
+            .domainModule(DomainModule(this))
+            .build()
     }
 
     companion object{

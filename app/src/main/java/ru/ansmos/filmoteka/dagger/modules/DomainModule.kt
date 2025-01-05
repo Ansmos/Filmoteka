@@ -1,15 +1,30 @@
 package ru.ansmos.filmoteka.dagger.modules
 
+import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.IOmdbApi
 import ru.ansmos.filmoteka.domain.Interactor
+import ru.ansmos.filmoteka.utils.PreferenceProvider
 import javax.inject.Singleton
 
 @Module
-class DomainModule {
+//Передаем контекст для SharedPreferences через конструктор
+class DomainModule(val context: Context) {
+    //Нам нужно контекст как-то провайдить, поэтому создаем такой метод
     @Singleton
     @Provides
-    fun provideInteractor(repository: MainRepository, omdbApi: IOmdbApi) = Interactor(repository,omdbApi)
+    fun provideContext() = context
+
+    //Создаем экземпляр SharedPreferences
+    @Singleton
+    @Provides
+    fun providePreferences(context: Context) = PreferenceProvider(context)
+
+    @Singleton
+    @Provides
+    fun provideInteractor(repository: MainRepository, omdbApi: IOmdbApi, preferences: PreferenceProvider)
+        = Interactor(repository, omdbApi, preferences )
 }
