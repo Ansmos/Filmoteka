@@ -11,6 +11,7 @@ import ru.ansmos.filmoteka.dagger.DaggerAppComponent
 import ru.ansmos.filmoteka.dagger.modules.DatabaseModule
 import ru.ansmos.filmoteka.dagger.modules.DomainModule
 import ru.ansmos.filmoteka.dagger.modules.RemoteModule
+import ru.ansmos.filmoteka.dagger.modules.RemoteModuleTmdb
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.ApiConstants
 import ru.ansmos.filmoteka.db.IOmdbApi
@@ -29,6 +30,7 @@ class App : Application() {
         //Создаем компонент
         dagger = DaggerAppComponent.builder()
             .remoteModule(RemoteModule())
+            .remoteModuleTmdb(RemoteModuleTmdb())
             .domainModule(DomainModule(this))
             .build()
     }

@@ -13,7 +13,7 @@ object Converter {
                 title = it.title,
                 poster = it.poster,
                 description = "Кратткое описание. В Api в списке его нет, нужно выдергивать как-то по каджому элементу списка отдельным запросом. Заодно и вопрос к ментору: Как это сделать ????",
-                rating = ((1..10).random() / (1..100).random()).toFloat(),
+                rating = 0.0,
                 year = it.year,
                 isInFavorites = false
             ))

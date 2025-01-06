@@ -25,7 +25,7 @@ class FilmViewHolder(var binding: FilmItemBinding) : RecyclerView.ViewHolder(bin
         //Устанавливаем рэйтинг
         binding.ratingDonut.setProgress((film.rating * 10).toInt())
 
-        if (film.rating != 0f) {
+        if (film.rating != 0.0) {
             // Добавим анимацию появления
             val anim = AlphaAnimation(0f, 1f).apply {
                 duration = 3000

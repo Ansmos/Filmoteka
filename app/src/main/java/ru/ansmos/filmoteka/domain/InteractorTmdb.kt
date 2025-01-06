@@ -7,24 +7,24 @@ import retrofit2.Response
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.*
 import ru.ansmos.filmoteka.utils.Converter
+import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 
-class Interactor(private val repo: MainRepository, private val retrofitService: IOmdbApi, private val preferences: PreferenceProvider) {
+class InteractorTmdb(private val repo: MainRepository, private val retrofitService: IThemoviedbApi, private val preferences: PreferenceProvider) {
     fun getFilmsDB(): List<Film> = repo.filmsDataBase
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.IApiCallback) {
-        retrofitService.getFilmList(searchString, page, ApiKey.APIKEY_OMDB).enqueue(object: Callback<OmdbFilmListDTO> {
-            override fun onResponse(call: Call<OmdbFilmListDTO>, response: Response<OmdbFilmListDTO>) {
+        retrofitService.getFilmList(ApiKey.APIKEY_TMDB, LANGUAGE, page).enqueue(object: Callback<TmdbFilmListDTO> {
+            override fun onResponse(call: Call<TmdbFilmListDTO>, response: Response<TmdbFilmListDTO>) {
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
-                callback.onSuccess(Converter.ConverterToFilmList(response.body()?.omdbFilmList))
+                callback.onSuccess(ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList))
             }
 
-            override fun onFailure(call: Call<OmdbFilmListDTO>, t: Throwable) {
+            override fun onFailure(call: Call<TmdbFilmListDTO>, t: Throwable) {
                 t.printStackTrace()
             }
-
         })
     }
 
@@ -35,7 +35,7 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
     }
 
     companion object{
-        private val searchString = "one"
-        private val testId = "tt3896198"
+        const val LANGUAGE = "ru-RU"
     }
+
 }

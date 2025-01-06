@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.domain.Interactor
 import javax.inject.Inject
+import javax.inject.Named
 
 class SettingsFragmentViewModel : ViewModel() {
     //Инжектим интерактор
