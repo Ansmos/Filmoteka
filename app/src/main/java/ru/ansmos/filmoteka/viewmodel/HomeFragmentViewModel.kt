@@ -15,8 +15,8 @@ class HomeFragmentViewModel: ViewModel() {
 
     val filmListLiveData = MutableLiveData<List<Film>>()
     var page: Int = 1
-    //@Inject lateinit var interactor: Interactor
-    @Inject lateinit var interactor: InteractorTmdb
+    @Inject lateinit var interactor: Interactor
+    //@Inject lateinit var interactor: InteractorTmdb
 
     init{
         App.instance.dagger.injHomeFragment(this)
@@ -29,7 +29,7 @@ class HomeFragmentViewModel: ViewModel() {
         getFilmsPage(page)
     }
 
-    private fun getFilmsPage(pageNew: Int){
+    fun getFilmsPage(pageNew: Int){
         interactor.getFilmsFromApi(page, object : IApiCallback{
             override fun onSuccess(films: List<Film>) {
                 filmListLiveData.postValue(films)

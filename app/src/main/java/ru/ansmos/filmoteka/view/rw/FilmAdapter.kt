@@ -43,7 +43,10 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
     override fun getItemCount(): Int {
         return items.size
     }
-
+    //Метод очистки адаптера
+    fun clearItems(){
+        items.clear()
+    }
     //Метод для добавления объектов в наш список
     fun addItems(list: List<Film>){
         //items.clear()

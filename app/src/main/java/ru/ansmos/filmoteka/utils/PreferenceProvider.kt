@@ -38,6 +38,6 @@ class PreferenceProvider(context: Context) {
     companion object {
         private const val KEY_FIRST_LAUNCH = "first_launch"
         private const val KEY_DEF_CATEGORY = "default_category"
-        private const val DEF_CATEGORY = "one"
+        private const val DEF_CATEGORY = "popular"
     }
 }

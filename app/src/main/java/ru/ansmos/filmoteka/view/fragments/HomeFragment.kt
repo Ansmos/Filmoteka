@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
@@ -59,16 +60,30 @@ class HomeFragment : Fragment() {
         initAnimationEnter()
         initSearchView()
         initRV()
+        initPullToRefresh()
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
 //        viewModel.filmListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>>{
 //            filmsDataBase = it
 //        })
         //Кладем нашу БД в RV
         viewModel.filmListLiveData.observe(viewLifecycleOwner, {
-
             filmsAdapter.addItems(it)
         })
 
+    }
+
+    private fun initPullToRefresh(){
+        //Вешаем слушатель, чтобы вызвался pull to refresh
+        val pullToRefresh = requireActivity().findViewById<SwipeRefreshLayout>(R.id.pull_to_refresh)
+        pullToRefresh.setOnRefreshListener {
+            //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
+            filmsAdapter.clearItems()
+            //Делаем новый запрос фильмов на сервер
+            viewModel.page = 1
+            viewModel.getFilmsPage(1)  //TODO этот параметр пока не подключен
+            //Убираем крутящееся колечко
+            pullToRefresh.isRefreshing = false
+        }
     }
 
     private fun initAnimationEnter() {

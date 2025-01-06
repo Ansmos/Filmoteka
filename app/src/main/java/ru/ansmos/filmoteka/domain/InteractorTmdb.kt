@@ -16,7 +16,7 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.IApiCallback) {
-        retrofitService.getFilmList(ApiKey.APIKEY_TMDB, LANGUAGE, page).enqueue(object: Callback<TmdbFilmListDTO> {
+        retrofitService.getFilmList(getDefaultCategoryFromPreferences(), ApiKey.APIKEY_TMDB, LANGUAGE, page).enqueue(object: Callback<TmdbFilmListDTO> {
             override fun onResponse(call: Call<TmdbFilmListDTO>, response: Response<TmdbFilmListDTO>) {
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 callback.onSuccess(ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList))
