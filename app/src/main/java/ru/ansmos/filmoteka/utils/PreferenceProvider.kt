@@ -2,13 +2,17 @@ package ru.ansmos.filmoteka.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.core.content.edit
+import androidx.lifecycle.MutableLiveData
 
 class PreferenceProvider(context: Context) {
     //Нам нужен контекст приложения
     private val appContext = context.applicationContext
     //Создаем экземпляр SharedPreferences
     private val preference: SharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    private lateinit var listener: OnSharedPreferenceChangeListener  //Будем прикручивать листенер для обновления набора данных
+    var currentCategory = MutableLiveData<String>()
 
     init {
         //Логика для первого запуска приложения, чтобы положить наши настройки,
@@ -21,6 +25,17 @@ class PreferenceProvider(context: Context) {
                 putBoolean(KEY_FIRST_LAUNCH, false)
             }
         }
+        initSharedPreferecncesListener()
+    }
+
+    private fun initSharedPreferecncesListener() {
+        listener = OnSharedPreferenceChangeListener{ sharedPreferences, key ->
+            when (key) {
+                // Если меняем текущую категорию
+                KEY_DEF_CATEGORY -> currentCategory.setValue(getDefCategory())
+            }
+        }
+        preference.registerOnSharedPreferenceChangeListener(listener)
     }
 
     //Сохраняем категорию
@@ -37,7 +52,7 @@ class PreferenceProvider(context: Context) {
 
     companion object {
         private const val KEY_FIRST_LAUNCH = "first_launch"
-        private const val KEY_DEF_CATEGORY = "default_category"
+        const val KEY_DEF_CATEGORY = "default_category"
         private const val DEF_CATEGORY = "popular"
     }
 }
