@@ -10,7 +10,9 @@ import retrofit2.create
 import ru.ansmos.filmoteka.BuildConfig
 import ru.ansmos.filmoteka.db.ApiConstants
 import ru.ansmos.filmoteka.db.IOmdbApi
+import ru.ansmos.filmoteka.db.IThemoviedbApi
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -33,6 +35,7 @@ class RemoteModule {
     }
 
     @Singleton
+    @Named("OMDB")
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
@@ -46,5 +49,7 @@ class RemoteModule {
 
     @Singleton
     @Provides
-    fun provideRetrofitService(retrofit: Retrofit): IOmdbApi = retrofit.create(IOmdbApi::class.java)
+    fun provideRetrofitService(@Named("OMDB") retrofit: Retrofit): IOmdbApi = retrofit.create(IOmdbApi::class.java)
+
+
 }

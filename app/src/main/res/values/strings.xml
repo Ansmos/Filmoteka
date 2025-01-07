@@ -12,4 +12,14 @@
     <string name="m25.exit_dbl_click">Для выхода щелкните дважды.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="m38_menu_settings_title_text">Настройки</string>
+    <string name="m38_radio_button_popular">Популярные</string>
+    <string name="m38_radio_button_top_rated">Топ</string>
+    <string name="m38_radio_button_upcoming">Скоро</string>
+    <string name="m38_radio_button_playing">В кинотеатрах</string>
+    <string name="m38_radio_group_header">Подборка на главном экране:</string>
+
+
 </resources>

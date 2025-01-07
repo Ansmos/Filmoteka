@@ -1,5 +1,7 @@
 package ru.ansmos.filmoteka.view
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,6 +14,7 @@ import com.airbnb.lottie.LottieAnimationView
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.ActivityMainBinding
 import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.view.fragments.*
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 
@@ -128,6 +131,12 @@ class MainActivity : AppCompatActivity() {
                     val tag = "casts"
                     val fragment = checkFragmentExistance(tag)
                     changeFragment(fragment?: CastsFragment(), tag)
+                    true
+                }
+                R.id.settings ->{
+                    val tag = "settings"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: SettingsFragment(), tag)
                     true
                 }
                 else -> false
