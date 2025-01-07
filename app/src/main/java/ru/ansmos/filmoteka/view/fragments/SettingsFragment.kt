@@ -48,6 +48,15 @@ class SettingsFragment : Fragment() {
                 R.id.radio_now_playing -> viewModel.putCategoryProperty(NOW_PLAYING_CATEGORY)
             }
         }
+        //Слушатель на кнопку удаления кеша 39*
+        binding.buttonClearCache.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                // Очистим кеш в БД
+                viewModel.interactor.clearFilmsInDB()
+                //После очистке кеша инициируем обновление списка на домашнем экране, сначала попытаясь достать данные из сети 39*
+                viewModel.interactor.gotoDefaultCategory()
+            }
+        })
     }
 
     companion object {

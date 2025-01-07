@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settings_fragment_root"
     android:background="@drawable/background_settings"
     tools:context=".view.fragments.SettingsFragment">
@@ -11,46 +12,58 @@
         android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@android:color/white"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/m38.layout_margin_lr"
             android:text="@string/m38_radio_group_header"/>
 
         <RadioButton
             android:id="@+id/radio_popular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/m38.layout_margin_lr"
+            android:layout_marginRight="@dimen/m38.layout_margin_lr"
             android:textColor="@android:color/white"
             android:text="@string/m38_radio_button_popular"/>
         <RadioButton
             android:id="@+id/radio_top_rated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/m38.layout_margin_lr"
+            android:layout_marginRight="@dimen/m38.layout_margin_lr"
             android:textColor="@android:color/white"
             android:text="@string/m38_radio_button_top_rated"/>
         <RadioButton
             android:id="@+id/radio_upcoming"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/m38.layout_margin_lr"
+            android:layout_marginRight="@dimen/m38.layout_margin_lr"
             android:textColor="@android:color/white"
             android:text="@string/m38_radio_button_upcoming"/>
         <RadioButton
             android:id="@+id/radio_now_playing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/m38.layout_margin_lr"
+            android:layout_marginRight="@dimen/m38.layout_margin_lr"
             android:textColor="@android:color/white"
             android:text="@string/m38_radio_button_playing"/>
     </RadioGroup>
-</FrameLayout>
+
+    <Button
+        android:id="@+id/button_clear_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/radio_group"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/m38.layout_margin_lr"
+        android:layout_marginLeft="@dimen/m38.layout_margin_lr"
+        android:text="Очистить кеШ">
+    </Button>
+</androidx.constraintlayout.widget.ConstraintLayout>

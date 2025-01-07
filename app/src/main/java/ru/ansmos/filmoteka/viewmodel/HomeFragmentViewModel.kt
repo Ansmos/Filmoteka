@@ -24,6 +24,7 @@ class HomeFragmentViewModel: ViewModel() {
     init{
         App.instance.dagger.injHomeFragment(this)
         getFilmsPage(page)
+        // Слушаем смену категории в настройках 38*
         preference.currentCategory.observeForever {
             Toast.makeText(App.instance.applicationContext,it,Toast.LENGTH_SHORT).show()
             getFilmsPage(page)
@@ -45,7 +46,8 @@ class HomeFragmentViewModel: ViewModel() {
             }
 
             override fun onFailure() {
-                Log.e("interactor","Error get page $page")
+                Log.e("interactor","Error get page $page from INET - Het from DB")
+                filmListLiveData.postValue(interactor.getFilmsFromDB())
             }
         })
     }

@@ -24,4 +24,6 @@
     <dimen name="m31.w.rating_donut">50dp</dimen>
     <dimen name="m31.trsl_z.rating_donut">11dp</dimen>
 
+    <dimen name="m38.layout_margin_lr">11dp</dimen>
+
 </resources>

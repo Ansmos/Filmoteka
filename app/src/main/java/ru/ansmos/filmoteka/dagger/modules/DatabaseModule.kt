@@ -1,13 +1,20 @@
 package ru.ansmos.filmoteka.dagger.modules
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
-import ru.ansmos.filmoteka.data.IRepo
+import dagger.Provides
+import ru.ansmos.filmoteka.data.DatabaseHelper
+import ru.ansmos.filmoteka.data.MainRepository
 import javax.inject.Singleton
 
 @Module
-abstract class DatabaseModule {
+class DatabaseModule {
     @Singleton
-    @Binds
-    abstract fun provideRepository(iRepo: IRepo) : IRepo
+    @Provides
+    fun provideDatabaseHelper(context: Context) = DatabaseHelper(context)
+
+    @Singleton
+    @Provides
+    fun provideRepository(databaseHelper: DatabaseHelper) = MainRepository(databaseHelper)
 }
