@@ -29,8 +29,9 @@ class App : Application() {
         instance = this
         //Создаем компонент
         dagger = DaggerAppComponent.builder()
-            .remoteModule(RemoteModule())
-            .remoteModuleTmdb(RemoteModuleTmdb())
+   //         .databaseModule(DatabaseModule())
+   //         .remoteModule(RemoteModule())
+   //         .remoteModuleTmdb(RemoteModuleTmdb())
             .domainModule(DomainModule(this))
             .build()
     }
