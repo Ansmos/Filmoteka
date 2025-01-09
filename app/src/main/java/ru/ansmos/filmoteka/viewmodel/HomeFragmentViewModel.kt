@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.db.Film
-import ru.ansmos.filmoteka.domain.Interactor
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import javax.inject.Inject
@@ -18,7 +17,6 @@ class HomeFragmentViewModel: ViewModel() {
     val filmListLiveData = MutableLiveData<List<Film>>()
     var page: Int = 1
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
-    //@Inject lateinit var interactor: Interactor
     @Inject lateinit var interactor: InteractorTmdb
 
     init{

@@ -6,7 +6,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.*
-import ru.ansmos.filmoteka.utils.Converter
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
