@@ -6,6 +6,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.*
+import ru.ansmos.filmoteka.utils.ConverterRoom
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
@@ -19,9 +20,8 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 val listFilms = ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList)
                 //Кладем фильмы в бд
-                listFilms.forEach{
-                    repo.putToDB(it)
-                }
+                repo.putFilmsToDB(ConverterRoom.convertFilmsToEntity(listFilms))
+                preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
                 callback.onSuccess(listFilms)
             }
 
@@ -32,8 +32,8 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
-    fun clearFilmsInDB()  = repo.clearAll()
+    fun getFilmsFromDB(): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(0, 5))
+    fun clearFilmsInDB()  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
 
