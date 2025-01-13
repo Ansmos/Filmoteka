@@ -21,5 +21,12 @@ class MainRepository(private val filmDao: ITmdbFilmDao) {
 
     fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<FilmEntity> = filmDao.getFilms(pageIndex, pageSize)
 
-    fun clearAllFilms() : Int = filmDao.clearAll()
+    fun clearAllFilms() : Int {
+        var deletedItemsCount : Int = 0
+        Executors.newSingleThreadExecutor().execute {
+             deletedItemsCount = filmDao.clearAll()
+        }
+        //Омновной поток не ждет другого, поэтому возвращает 0, если через дебаг, правильно. Как сделать возврат?
+        return deletedItemsCount
+    }
 }

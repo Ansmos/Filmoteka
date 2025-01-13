@@ -32,8 +32,8 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
-    fun getFilmsFromDB(): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(0, 5))
-    fun clearFilmsInDB()  = repo.clearAllFilms()
+    fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
+    fun clearFilmsInDB() : Int  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
 

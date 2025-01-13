@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,20 +30,6 @@ class HomeFragment : Fragment() {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
     private lateinit var filmsAdapter: FilmAdapter
-    // TODO Вопрос ментору. private var filmsDataBase вообще здесь нужен? Ведь мы подписаны
-//    private var filmsDataBase = listOf<Film>()
-//        //Используем backing field
-//        set(value) {
-//            //Если придет такое же значение, то мы выходим из метода
-//            if (field == value) {
-//                return
-//            } else {
-//                //Если пришло другое значение, то кладем его в переменную
-//                field = value
-//                //Обновляем RV адаптер
-//                filmsAdapter.addItems(field)
-//            }
-//        }
     private var lastVisibleItem = 0 // Для прокрутки и пагинации
     private var pageNumber = 1
 
@@ -68,8 +55,8 @@ class HomeFragment : Fragment() {
         //Кладем нашу БД в RV
         viewModel.filmListLiveData.observe(viewLifecycleOwner, {
             filmsAdapter.addItems(it)
+            Toast.makeText(requireContext(),"isNetworkOK = ${viewModel.isNetworkOK}", Toast.LENGTH_SHORT).show()
         })
-
     }
 
     private fun initPullToRefresh(){
@@ -80,7 +67,7 @@ class HomeFragment : Fragment() {
             filmsAdapter.clearItems()
             //Делаем новый запрос фильмов на сервер
             viewModel.page = 1
-            viewModel.getFilmsPage(1)  //TODO этот параметр пока не подключен
+            viewModel.getFilmsPage()
             //Убираем крутящееся колечко
             pullToRefresh.isRefreshing = false
         }
@@ -180,11 +167,12 @@ class HomeFragment : Fragment() {
                     heightSV = v.getMeasuredHeight()
                     heightRV = v.getChildAt(v.getChildCount() - 1).getMeasuredHeight()
                     heightRVprev = if (heightRVprev == 0) heightRV else heightRVprev
-                    Log.i("SV","oldScrollY=$oldScrollY, scrollY=$scrollY,   heightSV=$heightSV, heightRV=$heightRV, diff=${heightRV - heightSV}   --$heightRVprev")
+                    Log.i("SV","scrollY=$scrollY,  h_SV=$heightSV, h_RV=$heightRV, diff=${heightRV - heightSV}, h_RVPrev=$heightRVprev")
                     // Вся эта заморочка и-за предварительной загрузки до достижения конца списка (плавности)
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
-                        if (!swIsSendQuery){  //Если запрос в сеть еще не отправлен
-                            viewModel.changePage(++pageNumber)
+                        if (!swIsSendQuery){  //Если запрос  еще не отправлен
+                            viewModel.page = ++pageNumber
+                            viewModel.getFilmsPage()
                             swIsSendQuery = true
                         }
                     }
