@@ -6,7 +6,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.*
+import com.google.android.material.snackbar.Snackbar
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
 import ru.ansmos.filmoteka.db.Film
@@ -52,8 +55,17 @@ class HomeFragment : Fragment() {
 //        viewModel.filmListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>>{
 //            filmsDataBase = it
 //        })
+        //Подписываемся на сообщение о сетевой ошибке
+        viewModel.isNetworkError.observe(viewLifecycleOwner,{
+            Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_LONG).show()
+        })
+        //Подписываемся на progressBar
+        viewModel.showProgressBar.observe(viewLifecycleOwner, {
+            requireActivity().findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
+        })
         //Кладем нашу БД в RV
-        viewModel.filmListLiveData.observe(viewLifecycleOwner, {
+        viewModel.filmListLiveData?.observe(viewLifecycleOwner, {
+            Log.i("HF","Список ${it.size} : (${it[0].title} - ${it[9].title}")
             filmsAdapter.addItems(it)
             Toast.makeText(requireContext(),"isNetworkOK = ${viewModel.isNetworkOK}", Toast.LENGTH_SHORT).show()
         })

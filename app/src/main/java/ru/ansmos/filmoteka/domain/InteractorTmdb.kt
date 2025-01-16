@@ -1,6 +1,6 @@
 package ru.ansmos.filmoteka.domain
 
-import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
+import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,9 +20,10 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 val listFilms = ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList)
                 //Кладем фильмы в бд
-                repo.putFilmsToDB(ConverterRoom.convertFilmsToEntity(listFilms))
+                repo.putFilms(ConverterRoom.convertFilmsToEntity(listFilms))
                 preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
-                callback.onSuccess(listFilms)
+                //41 callback.onSuccess(listFilms)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: Call<TmdbFilmListDTO>, t: Throwable) {
@@ -32,7 +33,12 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
-    fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
+    //fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
+    fun getFilmsFromDB(pageIndex: Int, pageSize: Int): LiveData<List<Film>> {
+        // Page в Api начинается с 1, в БД с 0
+        val data = repo.getFilms(pageIndex - 1, pageSize)
+        return ConverterRoom.convertliveEntityToFilms(data)
+    }
     fun clearFilmsInDB() : Int  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
