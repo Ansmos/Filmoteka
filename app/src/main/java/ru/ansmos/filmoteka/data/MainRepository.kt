@@ -15,7 +15,7 @@ class MainRepository(private val filmDao: ITmdbFilmDao) {
     }
 
     fun getFilms(pageIndex: Int, pageSize: Int): LiveData<List<FilmEntity>> {
-        return filmDao.getFilms(pageIndex, pageSize)
+        return filmDao.getFilmsByPage(pageIndex, pageSize)
     }
 
     fun clearAllFilms() : Int {

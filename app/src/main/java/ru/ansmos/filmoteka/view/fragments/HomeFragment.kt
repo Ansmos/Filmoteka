@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,11 +26,14 @@ import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.view.rw.FilmAdapter
+import ru.ansmos.filmoteka.view.rw.FilmDiff
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding : FragmentHomeBinding
+    // Если у нас ошибка по сети, дальнейшую прокрутку будем брать из БД. PbllToRefresh может менять этот переключатель
+    private var isGetFromNetwork = true
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
@@ -52,22 +57,28 @@ class HomeFragment : Fragment() {
         initRV()
         initPullToRefresh()
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
-//        viewModel.filmListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>>{
-//            filmsDataBase = it
-//        })
         //Подписываемся на сообщение о сетевой ошибке
         viewModel.isNetworkError.observe(viewLifecycleOwner,{
-            Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_INDEFINITE)
+                .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                .setAction("Еще"){
+                    Log.i("HF","snack/ page=  ${viewModel.page}")
+                    viewModel.interactor.clearFilmsInDB()
+                }
+                .show()
         })
         //Подписываемся на progressBar
         viewModel.showProgressBar.observe(viewLifecycleOwner, {
             requireActivity().findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
         })
         //Кладем нашу БД в RV
-        viewModel.filmListLiveData?.observe(viewLifecycleOwner, {
-            Log.i("HF","Список ${it.size} : (${it[0].title} - ${it[9].title}")
+        viewModel.filmListLiveData.observe(viewLifecycleOwner, {
+            val sizeadapter = filmsAdapter.itemCount
+            val diff = FilmDiff(filmsAdapter.getItems(), it)
+            val diffResult = DiffUtil.calculateDiff(diff)
             filmsAdapter.addItems(it)
-            Toast.makeText(requireContext(),"isNetworkOK = ${viewModel.isNetworkOK}", Toast.LENGTH_SHORT).show()
+            diffResult.dispatchUpdatesTo(filmsAdapter)
+            if (it.size > 0) Log.i("HF","Список был ${sizeadapter} -> ${filmsAdapter.itemCount} : (${it[0].title} - ${it[9].title}")
         })
     }
 
@@ -180,6 +191,7 @@ class HomeFragment : Fragment() {
                     heightRV = v.getChildAt(v.getChildCount() - 1).getMeasuredHeight()
                     heightRVprev = if (heightRVprev == 0) heightRV else heightRVprev
                     Log.i("SV","scrollY=$scrollY,  h_SV=$heightSV, h_RV=$heightRV, diff=${heightRV - heightSV}, h_RVPrev=$heightRVprev")
+
                     // Вся эта заморочка и-за предварительной загрузки до достижения конца списка (плавности)
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
                         if (!swIsSendQuery){  //Если запрос  еще не отправлен
@@ -193,6 +205,7 @@ class HomeFragment : Fragment() {
                         heightRVprev = heightRV
                         swIsSendQuery = false
                     }
+
                 }
 
             })

@@ -16,10 +16,9 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class HomeFragmentViewModel: ViewModel() {
-    var isNetworkOK : Boolean = true  //true-данные взяты из сети, false-из БД
     val isNetworkError = SingleLiveEvent<Boolean>()
-    var filmListLiveData : LiveData<List<Film>>? = null
-    //val filmMutableListLiveData = MutableLiveData<List<Film>>()
+    val filmListLiveData : LiveData<List<Film>>
+
     val showProgressBar : MutableLiveData<Boolean> = MutableLiveData()
     var page: Int = 1
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
@@ -27,53 +26,37 @@ class HomeFragmentViewModel: ViewModel() {
 
     init{
         App.instance.dagger.injHomeFragment(this)
+        //Если прошло времени больше, чем настроено с последней загрузки, удаляем кеш.
+        if (System.currentTimeMillis() - preference.getLastUploadSucsessDateTime() > TIME_TO_PURGE_CACH) {
+            Executors.newSingleThreadExecutor().execute {
+                interactor.clearFilmsInDB()
+            }
+        }
         // Берем из БД то, что есть.
- // in getPage То же делаю
- //        filmListLiveData = interactor.getFilmsFromDB(page , PAGE_SIZE_FROM_DB)
-//        MediatorLiveData<Unit>().addSource(filmListLiveData, {
-//            filmMutableListLiveData.postValue(it)})
-        // Interactor кладет фильмы в БД
-        getFilmsPage()
+         filmListLiveData = interactor.getFilmsFromDB(page , PAGE_SIZE_FROM_DB)
         // Слушаем смену категории в настройках 38*
+        interactor.gotoDefaultCategory()
         preference.currentCategory.observeForever {
             getFilmsPage()
         }
-        interactor.gotoDefaultCategory()
     }
 
     fun getFilmsPage() {    //Вернем статус запроса из сети для потребителей View
         showProgressBar.postValue(true)
-        interactor.getFilmsFromApi(page, object : IApiCallback{
-            //41 override fun onSuccess(films: List<Film>) {
+        interactor.getFilmsFromApi(page, object : IApiCallback {
             override fun onSuccess() {
+                page++
                 showProgressBar.postValue(false)
-                isNetworkError.postValue(true)
             }
-
             override fun onFailure() {
                 isNetworkError.postValue(true)
                 showProgressBar.postValue(false)
-                isNetworkOK = false
-                val nowTime = System.currentTimeMillis()
-                val lastTime = preference.getLastUploadSucsessDateTime()
-                Log.d("interactor","Error get page $page from INET - Get from DB - Now ${SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(nowTime)} - Prev ${SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(lastTime)} = ${nowTime - lastTime}")
-                Executors.newSingleThreadExecutor().execute {
-                    //Если прошло времени больше, чем настроено с последней загрузки, удаляем кеш.
-                    if (System.currentTimeMillis() - preference.getLastUploadSucsessDateTime() > TIME_TO_PURGE_CACH) {
-                        interactor.clearFilmsInDB()
-                    }
-                    page = page
-                    Log.i("VM_getFilmsPage","page=$page")
-                    filmListLiveData = interactor.getFilmsFromDB(page, PAGE_SIZE_FROM_DB)
-                    page++
-                }
+                Log.d("interactor", "Error get page $page from INET - Get from DB")
             }
         })
     }
 
-
     interface IApiCallback {
-        //41 fun onSuccess(films: List<Film>)
         fun onSuccess()
         fun onFailure()
     }

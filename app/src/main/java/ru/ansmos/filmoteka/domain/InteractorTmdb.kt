@@ -36,7 +36,8 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
     //fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
     fun getFilmsFromDB(pageIndex: Int, pageSize: Int): LiveData<List<Film>> {
         // Page в Api начинается с 1, в БД с 0
-        val data = repo.getFilms(pageIndex - 1, pageSize)
+        // Берем все записи пока не сделали пагинацию.
+        val data = repo.getFilms(0, Int.MAX_VALUE)
         return ConverterRoom.convertliveEntityToFilms(data)
     }
     fun clearFilmsInDB() : Int  = repo.clearAllFilms()

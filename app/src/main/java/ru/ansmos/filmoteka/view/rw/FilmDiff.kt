@@ -3,7 +3,7 @@ package ru.ansmos.filmoteka.view.rw
 import androidx.recyclerview.widget.DiffUtil
 import ru.ansmos.filmoteka.db.Film
 
-class FilmDiff(val oldList: ArrayList <Film> , val newList: ArrayList <Film> ): DiffUtil.Callback() {
+class FilmDiff(val oldList: List <Film> , val newList: List <Film> ): DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }
