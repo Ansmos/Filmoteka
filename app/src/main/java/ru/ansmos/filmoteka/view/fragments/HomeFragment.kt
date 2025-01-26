@@ -32,13 +32,10 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding : FragmentHomeBinding
-    // Если у нас ошибка по сети, дальнейшую прокрутку будем брать из БД. PbllToRefresh может менять этот переключатель
-    private var isGetFromNetwork = true
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
     private lateinit var filmsAdapter: FilmAdapter
-    private var lastVisibleItem = 0 // Для прокрутки и пагинации
     private var pageNumber = 1
 
     init {

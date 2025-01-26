@@ -23,5 +23,9 @@
 
     <string name="m41_network_error">Ошибка загрузки данный из сети.</string>
 
+    <string name="m42_permission_storage">Нет разрешения. Пожалуйста, предоставьте разрешение</string>
+    <string name="m42_downloaded_to_gallery">"Сохранено в галерею"</string>
+    <string name="m42_open">В галерею</string>
+
 
 </resources>

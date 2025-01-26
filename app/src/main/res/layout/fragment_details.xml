@@ -83,6 +83,27 @@
         android:tint="@android:color/white"
         android:accessibilityPaneTitle="@string/m20.btn_menu_share">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/details_fab_download_wp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/m24.layout_margin.fab1"
+        app:borderWidth="0dp"
+        android:translationX="@dimen/m24.layout_margin.fab_download"
+        android:backgroundTint="@color/teal_200"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="left|bottom"
+        app:srcCompat="@drawable/ic_outline_file_download_24"
+        app:tint="@android:color/white"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="invisible"
+        android:layout_width="@dimen/m31.w.rating_donut"
+        android:layout_height="@dimen/m31.h.rating_donut"
+        android:translationZ="@dimen/m42.trsl_z.fab_download"
+        app:layout_anchor="@id/details_fab_download_wp"
+        app:layout_anchorGravity="center"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
