@@ -21,5 +21,7 @@
     <string name="m38_radio_button_playing">В кинотеатрах</string>
     <string name="m38_radio_group_header">Подборка на главном экране:</string>
 
+    <string name="m41_network_error">Ошибка загрузки данный из сети.</string>
+
 
 </resources>

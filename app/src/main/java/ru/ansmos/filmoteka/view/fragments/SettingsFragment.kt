@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -52,7 +53,9 @@ class SettingsFragment : Fragment() {
         binding.buttonClearCache.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 // Очистим кеш в БД
-                viewModel.interactor.clearFilmsInDB()
+
+                val deletedRecords = viewModel.interactor.clearFilmsInDB()
+                Toast.makeText( requireContext(), "Удалено записей - $deletedRecords", Toast.LENGTH_SHORT).show()
                 //После очистке кеша инициируем обновление списка на домашнем экране, сначала попытаясь достать данные из сети 39*
                 viewModel.interactor.gotoDefaultCategory()
             }

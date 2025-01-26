@@ -1,12 +1,12 @@
 package ru.ansmos.filmoteka.domain
 
-import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
+import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.*
-import ru.ansmos.filmoteka.utils.Converter
+import ru.ansmos.filmoteka.utils.ConverterRoom
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
@@ -20,10 +20,10 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
                 //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 val listFilms = ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList)
                 //Кладем фильмы в бд
-                listFilms.forEach{
-                    repo.putToDB(it)
-                }
-                callback.onSuccess(listFilms)
+                repo.putFilms(ConverterRoom.convertFilmsToEntity(listFilms))
+                preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
+                //41 callback.onSuccess(listFilms)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: Call<TmdbFilmListDTO>, t: Throwable) {
@@ -33,8 +33,14 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
-    fun clearFilmsInDB()  = repo.clearAll()
+    //fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
+    fun getFilmsFromDB(pageIndex: Int, pageSize: Int): LiveData<List<Film>> {
+        // Page в Api начинается с 1, в БД с 0
+        // Берем все записи пока не сделали пагинацию.
+        val data = repo.getFilms(0, Int.MAX_VALUE)
+        return ConverterRoom.convertliveEntityToFilms(data)
+    }
+    fun clearFilmsInDB() : Int  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
 

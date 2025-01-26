@@ -14,7 +14,7 @@ import ru.ansmos.filmoteka.db.Film
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
 class FilmAdapter(private val clickListener: IOnItemClixkListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    private val  items = mutableListOf<Film>()      //Здесь у нас хранится список элементов для RV
+    private var items = mutableListOf<Film>()      //Здесь у нас хранится список элементов для RV
 
     //В этом методе мы привязываем наш ViewHolder и передаем туда "надутую" верстку нашего фильма
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -43,15 +43,23 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
     override fun getItemCount(): Int {
         return items.size
     }
+
+    fun getItems() : List<Film> = items.toList()
+
     //Метод очистки адаптера
     fun clearItems(){
         items.clear()
     }
+
     //Метод для добавления объектов в наш список
     fun addItems(list: List<Film>){
         //items.clear()
         items.addAll(list)
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
+    }
+
+    fun replaceItems(list: List<Film>){
+        items = list.toMutableList()
     }
 
     //Интерфейс для обработки кликов

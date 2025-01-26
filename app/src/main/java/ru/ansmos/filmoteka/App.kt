@@ -10,17 +10,13 @@ import ru.ansmos.filmoteka.dagger.AppComponent
 import ru.ansmos.filmoteka.dagger.DaggerAppComponent
 import ru.ansmos.filmoteka.dagger.modules.DatabaseModule
 import ru.ansmos.filmoteka.dagger.modules.DomainModule
-import ru.ansmos.filmoteka.dagger.modules.RemoteModule
 import ru.ansmos.filmoteka.dagger.modules.RemoteModuleTmdb
 import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.ApiConstants
-import ru.ansmos.filmoteka.db.IOmdbApi
-import ru.ansmos.filmoteka.domain.Interactor
 import java.util.concurrent.TimeUnit
 
 class App : Application() {
     lateinit var repo: MainRepository
-    lateinit var interactor: Interactor
     lateinit var dagger: AppComponent
 
     override fun onCreate() {

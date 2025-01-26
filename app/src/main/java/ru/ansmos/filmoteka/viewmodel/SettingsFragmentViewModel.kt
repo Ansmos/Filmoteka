@@ -3,7 +3,6 @@ package ru.ansmos.filmoteka.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.ansmos.filmoteka.App
-import ru.ansmos.filmoteka.domain.Interactor
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import javax.inject.Inject
 import javax.inject.Named

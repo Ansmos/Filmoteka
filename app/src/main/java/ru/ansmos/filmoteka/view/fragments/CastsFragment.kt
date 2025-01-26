@@ -18,9 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
-import ru.ansmos.filmoteka.db.FilmOMDB
-import ru.ansmos.filmoteka.db.IOmdbApi
-import ru.ansmos.filmoteka.db.OmdbFilmDTO
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import java.io.IOException
 import kotlin.math.log
