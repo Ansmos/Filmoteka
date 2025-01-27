@@ -19,11 +19,7 @@ class DetailsFragmentViewModel : ViewModel() {
         return suspendCoroutine {
             val url = URL(url)
             var bitmap: Bitmap? = null
-            try {
-                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-            } catch (e: java.lang.Exception){
-                isNetworkError.postValue(R.string.m41_network_error.toString())
-            }
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
             it.resume(bitmap)
         }
     }

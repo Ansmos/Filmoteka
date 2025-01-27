@@ -65,14 +65,6 @@ class DetailsFragment : Fragment() {
             .centerCrop()
             .into(binding.detailsPoster)
         binding.detailsDescription.text = film.description
-        //Подписываемся на сообщение о сетевой ошибке
-        viewModel.isNetworkError.observe(viewLifecycleOwner,{
-            Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_LONG)
-                .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                .setAction("OK"){
-                }
-                .show()
-        })
     }
 
     private fun performAsyncLoadOfPoster(){
@@ -82,8 +74,15 @@ class DetailsFragment : Fragment() {
             requestPermission()
             return
         }
+        //Создаем обработчик ошибки в Coroutine
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Snackbar.make(binding.root, R.string.m41_network_error, Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                .setAction("OK"){}
+                .show()
+        }
         //Создаем родительский скоуп с диспатчером Main потока, так как будем взаимодействовать с UI
-        MainScope().launch {
+        MainScope().launch(exceptionHandler) {
             //Включаем Прогресс-бар
             binding.progressBar.isVisible = true
             //Создаем через async, так как нам нужен результат от работы, то есть Bitmap
