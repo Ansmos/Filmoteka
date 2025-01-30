@@ -7,18 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.*
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
 import ru.ansmos.filmoteka.db.Film
@@ -26,17 +25,23 @@ import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.view.rw.FilmAdapter
-import ru.ansmos.filmoteka.view.rw.FilmDiff
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
-import java.util.*
+import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeFragment : Fragment() {
     private lateinit var binding : FragmentHomeBinding
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
+
+    override fun onStop() {
+        super.onStop()
+        scope.cancel()
+    }
+
+    private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var filmsAdapter: FilmAdapter
-    private var pageNumber = 1
+    //private var pageNumber = 1
 
     init {
         exitTransition = Fade()
@@ -55,28 +60,43 @@ class HomeFragment : Fragment() {
         initPullToRefresh()
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
         //Подписываемся на сообщение о сетевой ошибке
-        viewModel.isNetworkError.observe(viewLifecycleOwner,{
-            Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_INDEFINITE)
-                .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                .setAction("Еще"){
-                    Log.i("HF","snack/ page=  ${viewModel.page}")
-                    viewModel.interactor.clearFilmsInDB()
+        scope.launch {
+            for (element in viewModel.showNetworkErrorSnack) {
+                val snack = Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_INDEFINITE)
+                if (viewModel.showNetworkErrorSnack.receive()) {
+                    snack.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                        .setAction("OK") {
+                            Log.i("HF", "snack/ page=  ${viewModel.showProgressBar}")
+                            //viewModel.interactor.clearFilmsInDB()
+                            snack.dismiss()
+                        }
+                        .show()
+                } else {
+                    if (snack.isShown) snack.dismiss()
                 }
-                .show()
-        })
+            }
+        }
         //Подписываемся на progressBar
-        viewModel.showProgressBar.observe(viewLifecycleOwner, {
-            requireActivity().findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
-        })
+        scope.launch {
+            for (element in viewModel.showProgressBar){
+                launch(Dispatchers.Main) {
+                    binding.root.findViewById<ProgressBar>(R.id.progress_bar).isVisible = element
+                }
+            }
+        }
         //Кладем нашу БД в RV
-        viewModel.filmListLiveData.observe(viewLifecycleOwner, {
-            val sizeadapter = filmsAdapter.itemCount
-            val diff = FilmDiff(filmsAdapter.getItems(), it)
-            val diffResult = DiffUtil.calculateDiff(diff)
-            filmsAdapter.addItems(it)
-            diffResult.dispatchUpdatesTo(filmsAdapter)
-            if (it.size > 0) Log.i("HF","Список был ${sizeadapter} -> ${filmsAdapter.itemCount} : (${it[0].title} - ${it[9].title}")
-        })
+        CoroutineScope(EmptyCoroutineContext).launch {
+            viewModel.filmListFlowData.collect{
+                withContext(Dispatchers.Main){
+                    val sizeadapter = filmsAdapter.itemCount
+                    //val diff = FilmDiff(filmsAdapter.getItems(), it)
+                    //val diffResult = DiffUtil.calculateDiff(diff)
+                    filmsAdapter.addItems(it)
+                    //diffResult.dispatchUpdatesTo(filmsAdapter)
+                    if (it.size > 0) Log.i("HF","Список был ${sizeadapter} -> ${filmsAdapter.itemCount} : (${it[0].title} - ${it[9].title}")
+                }
+            }
+        }
     }
 
     private fun initPullToRefresh(){
@@ -86,8 +106,10 @@ class HomeFragment : Fragment() {
             //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
             filmsAdapter.clearItems()
             //Делаем новый запрос фильмов на сервер
-            viewModel.page = 1
-            viewModel.getFilmsPage()
+            scope.launch {
+                viewModel.page.send(1)
+            }
+            viewModel.getFilmsPage(true)
             //Убираем крутящееся колечко
             pullToRefresh.isRefreshing = false
         }
@@ -192,8 +214,8 @@ class HomeFragment : Fragment() {
                     // Вся эта заморочка и-за предварительной загрузки до достижения конца списка (плавности)
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
                         if (!swIsSendQuery){  //Если запрос  еще не отправлен
-                            viewModel.page = ++pageNumber
-                            viewModel.getFilmsPage()
+                            //viewModel.page = ++pageNumber
+                            viewModel.getFilmsPage(true) //На следущую страницу
                             swIsSendQuery = true
                         }
                     }

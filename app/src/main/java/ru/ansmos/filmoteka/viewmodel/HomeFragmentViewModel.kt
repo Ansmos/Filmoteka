@@ -1,64 +1,51 @@
 package ru.ansmos.filmoteka.viewmodel
 
-import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
-import ru.ansmos.filmoteka.utils.SingleLiveEvent
-import java.text.SimpleDateFormat
-import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeFragmentViewModel: ViewModel() {
-    val isNetworkError = SingleLiveEvent<Boolean>()
-    val filmListLiveData : LiveData<List<Film>>
-
-    val showProgressBar : MutableLiveData<Boolean> = MutableLiveData()
-    var page: Int = 1
+    val filmListFlowData : Flow<List<Film>>
+    val scope = CoroutineScope(Dispatchers.IO)
+    val showProgressBar : Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
+    val showNetworkErrorSnack : Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
+    var page: Channel<Int>  //=1
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
     @Inject lateinit var interactor: InteractorTmdb
 
     init{
         App.instance.dagger.injHomeFragment(this)
+        showProgressBar = interactor.isProgressBarVisible
+        showNetworkErrorSnack = interactor.isNetworkError
+        page = interactor.pageNumber
         //Если прошло времени больше, чем настроено с последней загрузки, удаляем кеш.
         if (System.currentTimeMillis() - preference.getLastUploadSucsessDateTime() > TIME_TO_PURGE_CACH) {
-            Executors.newSingleThreadExecutor().execute {
+            CoroutineScope(EmptyCoroutineContext).launch {
                 interactor.clearFilmsInDB()
             }
         }
         // Берем из БД то, что есть.
-         filmListLiveData = interactor.getFilmsFromDB(page , PAGE_SIZE_FROM_DB)
+         filmListFlowData = interactor.getFilmsFromDB(0 , PAGE_SIZE_FROM_DB)
         // Слушаем смену категории в настройках 38*
         interactor.gotoDefaultCategory()
-        preference.currentCategory.observeForever {
-            getFilmsPage()
-        }
+
+
+//TODO        preference.currentCategory.observeForever {
+            getFilmsPage(true)
+//        }
     }
 
-    fun getFilmsPage() {    //Вернем статус запроса из сети для потребителей View
-        showProgressBar.postValue(true)
-        interactor.getFilmsFromApi(page, object : IApiCallback {
-            override fun onSuccess() {
-                page++
-                showProgressBar.postValue(false)
-            }
-            override fun onFailure() {
-                isNetworkError.postValue(true)
-                showProgressBar.postValue(false)
-                Log.d("interactor", "Error get page $page from INET - Get from DB")
-            }
-        })
-    }
-
-    interface IApiCallback {
-        fun onSuccess()
-        fun onFailure()
+    fun getFilmsPage(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
+        interactor.getFilmsFromApi(1)
     }
 
     companion object{
