@@ -2,6 +2,8 @@ package ru.ansmos.filmoteka.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import ru.ansmos.filmoteka.data.entity.FilmEntity
 import ru.ansmos.filmoteka.db.Film
 
@@ -17,6 +19,19 @@ object ConverterRoom {
         }
         return result
     }
+
+    fun convertFlowEntityToFilms(list: Flow<List<FilmEntity>>): Flow<List<Film>> {
+        val result = list.map {
+             filmEntityList ->
+                val filmList = arrayListOf<Film>()
+                filmEntityList.forEach {
+                    convertEntityToFilm(it)?.let { it1 -> filmList.add(it1) }
+                }
+                return@map filmList.toList()
+            }
+        return result
+    }
+
 
     fun convertEntityToFilms(list: List<FilmEntity>?): List<Film> {
         val result = mutableListOf<Film>()

@@ -55,7 +55,7 @@ class FilmAdapter(private val clickListener: IOnItemClixkListener) :
     fun addItems(list: List<Film>){
         //items.clear()
         items.addAll(list)
-        //notifyDataSetChanged()
+        notifyDataSetChanged()  //если без DiffUtils
     }
 
     fun replaceItems(list: List<Film>){

@@ -11,6 +11,7 @@
     <dimen name="m24.layout_margin.fab1">16dp</dimen>
     <dimen name="m24.layout_margin.fab2">86dp</dimen>
     <dimen name="m24.layout_margin.fab3">156dp</dimen>
+    <dimen name="m24.layout_margin.fab_download">72dp</dimen>
     <dimen name="m24.layout_margin.text">8dp</dimen>
 
     <dimen name="m31.h.item_rv">150dp</dimen>
@@ -25,5 +26,6 @@
     <dimen name="m31.trsl_z.rating_donut">11dp</dimen>
 
     <dimen name="m38.layout_margin_lr">11dp</dimen>
+    <dimen name="m42.trsl_z.fab_download">10dp</dimen>
 
 </resources>

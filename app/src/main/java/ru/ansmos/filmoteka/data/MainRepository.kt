@@ -1,6 +1,7 @@
 package ru.ansmos.filmoteka.data
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 import ru.ansmos.filmoteka.data.dao.ITmdbFilmDao
 import ru.ansmos.filmoteka.data.entity.FilmEntity
 import java.util.concurrent.Executors
@@ -14,7 +15,7 @@ class MainRepository(private val filmDao: ITmdbFilmDao) {
         }
     }
 
-    fun getFilms(pageIndex: Int, pageSize: Int): LiveData<List<FilmEntity>> {
+    fun getFilms(pageIndex: Int, pageSize: Int): Flow<List<FilmEntity>> {
         return filmDao.getFilmsByPage(pageIndex, pageSize)
     }
 

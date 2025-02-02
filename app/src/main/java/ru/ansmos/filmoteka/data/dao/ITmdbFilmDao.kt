@@ -2,6 +2,7 @@ package ru.ansmos.filmoteka.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import ru.ansmos.filmoteka.data.entity.FilmEntity
 
 //Помечаем, что это не просто интерфейс, а Dao-объект
@@ -9,7 +10,7 @@ import ru.ansmos.filmoteka.data.entity.FilmEntity
 interface ITmdbFilmDao {
     //Запрос на всю таблицу постранично
     @Query("SELECT * FROM cached_films LIMIT (:pageSize) OFFSET (:pageIndex * 10)")
-    fun getFilmsByPage(pageIndex : Int, pageSize: Int): LiveData<List<FilmEntity>>
+    fun getFilmsByPage(pageIndex : Int, pageSize: Int): Flow<List<FilmEntity>>
 
 
     //Кладём списком в БД, в случае конфликта перезаписываем
