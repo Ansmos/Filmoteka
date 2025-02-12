@@ -1,7 +1,5 @@
 package ru.ansmos.filmoteka.view
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,18 +7,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieAnimationView
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.ActivityMainBinding
 import ru.ansmos.filmoteka.db.Film
-import ru.ansmos.filmoteka.utils.PreferenceProvider
 import ru.ansmos.filmoteka.view.fragments.*
-import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
     private lateinit var binding: ActivityMainBinding
+    val compositeDisposable = CompositeDisposable()
     private var backPressed = 0L
     var firstStart: Boolean = true
     var defaultFragmentTag: String = ""
@@ -104,6 +101,11 @@ class MainActivity : AppCompatActivity() {
             defaultFragmentTag = previoustFragmentTag
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 
     fun initBottomNavigationView() {
