@@ -105,8 +105,9 @@ class HomeFragment : Fragment() {
             //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
             filmsAdapter.clearItems()
             //Делаем новый запрос фильмов на сервер
+            viewModel.showNetworkErrorSnack.onNext(false)
             viewModel.page = 1
-            viewModel.getFilmsPage(true)
+            viewModel.getFilmsPageRx(true)
             //Убираем крутящееся колечко
             pullToRefresh.isRefreshing = false
         }
@@ -212,7 +213,7 @@ class HomeFragment : Fragment() {
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
                         if (!swIsSendQuery){  //Если запрос  еще не отправлен
                             //viewModel.page = ++pageNumber
-                            viewModel.getFilmsPage(true) //На следущую страницу
+                            viewModel.getFilmsPageRx(true) //На следущую страницу
                             swIsSendQuery = true
                         }
                     }

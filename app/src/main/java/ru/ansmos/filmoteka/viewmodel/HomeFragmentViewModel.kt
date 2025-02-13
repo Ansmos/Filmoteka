@@ -40,11 +40,11 @@ class HomeFragmentViewModel: ViewModel() {
         interactor.gotoDefaultCategory()
 
 //TODO        preference.currentCategory.observeForever {
-            getFilmsPage(true)
+            getFilmsPageRx(true)
 //        }
     }
 
-    fun getFilmsPage(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
+    fun getFilmsPageRx(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
         interactor.getFilmsFromApi()
     }
 

@@ -3,6 +3,7 @@ package ru.ansmos.filmoteka.domain
 import android.util.Log
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,6 +51,30 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
+    fun getFilmsFromAPIRx(page: Int){
+        // Показываем ProgressBar
+        isProgressBarVisible.onNext(true)
+        retrofitService.getFilmListRx(getDefaultCategoryFromPreferences(), ApiKey.APIKEY_TMDB,  LANGUAGE, pageNumber)
+            .subscribeOn(Schedulers.io())
+            .map { filmsDTO ->
+                ConverterTmdb.convertApiListToDtoList(filmsDTO. tmdbFilmList)
+            }
+            .subscribe(
+                {
+                    repo.putFilms(ConverterRoom.convertFilmsToEntity(it))
+                    preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
+                    isProgressBarVisible.onNext(false)
+                    isNetworkError.onNext(false)
+                    ++pageNumber
+                    Log.i("interactor RX 1"," Put to db -OK data from NET")
+                },
+                {
+                    isProgressBarVisible.onNext(false)
+                    isNetworkError.onNext(true)
+                    Log.d("interactor", "Error get page $pageNumber from INET - Get from DB")
+                },
+            )
+    }
 
     //fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
     fun getFilmsFromDB(pageIndex: Int, pageSize: Int): Observable<List<Film>> {
