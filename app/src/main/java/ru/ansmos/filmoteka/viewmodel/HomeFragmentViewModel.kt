@@ -1,6 +1,8 @@
 package ru.ansmos.filmoteka.viewmodel
 
 import androidx.lifecycle.ViewModel
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -14,11 +16,10 @@ import javax.inject.Inject
 import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeFragmentViewModel: ViewModel() {
-    val filmListFlowData : Flow<List<Film>>
-    val scope = CoroutineScope(Dispatchers.IO)
-    val showProgressBar : Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
-    val showNetworkErrorSnack : Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
-    var page: Channel<Int>  //=1
+    val filmListRxData : Observable<List<Film>>
+    val showProgressBar : BehaviorSubject<Boolean> //Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
+    val showNetworkErrorSnack : BehaviorSubject<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
+    var page : Int
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
     @Inject lateinit var interactor: InteractorTmdb
 
@@ -34,18 +35,17 @@ class HomeFragmentViewModel: ViewModel() {
             }
         }
         // Берем из БД то, что есть.
-         filmListFlowData = interactor.getFilmsFromDB(0 , PAGE_SIZE_FROM_DB)
+         filmListRxData = interactor.getFilmsFromDB(0 , PAGE_SIZE_FROM_DB)
         // Слушаем смену категории в настройках 38*
         interactor.gotoDefaultCategory()
 
-
 //TODO        preference.currentCategory.observeForever {
-            getFilmsPage(true)
+            getFilmsPageRx(true)
 //        }
     }
 
-    fun getFilmsPage(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
-        interactor.getFilmsFromApi(1)
+    fun getFilmsPageRx(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
+        interactor.getFilmsFromApi()
     }
 
     companion object{

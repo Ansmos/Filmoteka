@@ -17,7 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.*
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
 import ru.ansmos.filmoteka.db.Film
@@ -26,22 +27,15 @@ import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.view.rw.FilmAdapter
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
-import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeFragment : Fragment() {
     private lateinit var binding : FragmentHomeBinding
+
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
 
-    override fun onStop() {
-        super.onStop()
-        scope.cancel()
-    }
-
-    private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var filmsAdapter: FilmAdapter
-    //private var pageNumber = 1
 
     init {
         exitTransition = Fade()
@@ -60,14 +54,15 @@ class HomeFragment : Fragment() {
         initPullToRefresh()
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
         //Подписываемся на сообщение о сетевой ошибке
-        scope.launch {
-            for (element in viewModel.showNetworkErrorSnack) {
+        val observableNetErr = viewModel.showNetworkErrorSnack
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe{
                 val snack = Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_INDEFINITE)
-                if (viewModel.showNetworkErrorSnack.receive()) {
+                if (it) {
                     snack.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                         .setAction("OK") {
                             Log.i("HF", "snack/ page=  ${viewModel.showProgressBar}")
-                            //viewModel.interactor.clearFilmsInDB()
                             snack.dismiss()
                         }
                         .show()
@@ -75,28 +70,32 @@ class HomeFragment : Fragment() {
                     if (snack.isShown) snack.dismiss()
                 }
             }
-        }
+        (activity as MainActivity).compositeDisposable.add(observableNetErr)
         //Подписываемся на progressBar
-        scope.launch {
-            for (element in viewModel.showProgressBar){
-                launch(Dispatchers.Main) {
-                    binding.root.findViewById<ProgressBar>(R.id.progress_bar).isVisible = element
-                }
+        val observableProgBar = viewModel.showProgressBar
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe{
+                binding.root.findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
             }
-        }
+        (activity as MainActivity).compositeDisposable.add(observableProgBar)
         //Кладем нашу БД в RV
-        CoroutineScope(EmptyCoroutineContext).launch {
-            viewModel.filmListFlowData.collect{
-                withContext(Dispatchers.Main){
-                    val sizeadapter = filmsAdapter.itemCount
-                    //val diff = FilmDiff(filmsAdapter.getItems(), it)
-                    //val diffResult = DiffUtil.calculateDiff(diff)
-                    filmsAdapter.addItems(it)
-                    //diffResult.dispatchUpdatesTo(filmsAdapter)
-                    if (it.size > 0) Log.i("HF","Список был ${sizeadapter} -> ${filmsAdapter.itemCount} : (${it[0].title} - ${it[9].title}")
-                }
-            }
-        }
+        val observableData = viewModel.filmListRxData
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val adapterSize = filmsAdapter.itemCount
+                //val diff = FilmDiff(filmsAdapter.getItems(), it)
+                //val diffResult = DiffUtil.calculateDiff(diff)
+                filmsAdapter.addItems(it)
+                //diffResult.dispatchUpdatesTo(filmsAdapter)
+                if (it.size > 0) Log.i("HF","Список был ${adapterSize} -> ${filmsAdapter.itemCount} : (${it[0].title} - ${it[9].title}")
+            }, {
+                Log.i("FH", "error ${it.message}")
+            }, {
+                Log.i("FH", "onCompleted")
+            })
+        (activity as MainActivity).compositeDisposable.add(observableData)
     }
 
     private fun initPullToRefresh(){
@@ -106,10 +105,9 @@ class HomeFragment : Fragment() {
             //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
             filmsAdapter.clearItems()
             //Делаем новый запрос фильмов на сервер
-            scope.launch {
-                viewModel.page.send(1)
-            }
-            viewModel.getFilmsPage(true)
+            viewModel.showNetworkErrorSnack.onNext(false)
+            viewModel.page = 1
+            viewModel.getFilmsPageRx(true)
             //Убираем крутящееся колечко
             pullToRefresh.isRefreshing = false
         }
@@ -215,7 +213,7 @@ class HomeFragment : Fragment() {
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
                         if (!swIsSendQuery){  //Если запрос  еще не отправлен
                             //viewModel.page = ++pageNumber
-                            viewModel.getFilmsPage(true) //На следущую страницу
+                            viewModel.getFilmsPageRx(true) //На следущую страницу
                             swIsSendQuery = true
                         }
                     }
