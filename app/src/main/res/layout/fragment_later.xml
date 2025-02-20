@@ -10,9 +10,11 @@
     tools:context=".view.fragments.LaterFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/later_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:listitem="@layout/film_item"
+    android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>

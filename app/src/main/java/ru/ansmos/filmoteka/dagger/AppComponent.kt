@@ -6,6 +6,7 @@ import ru.ansmos.filmoteka.dagger.modules.DatabaseModule
 import ru.ansmos.filmoteka.dagger.modules.DomainModule
 import ru.ansmos.filmoteka.dagger.modules.RemoteModuleTmdb
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
+import ru.ansmos.filmoteka.viewmodel.LaterFragmentViewModel
 import ru.ansmos.filmoteka.viewmodel.SettingsFragmentViewModel
 import javax.inject.Singleton
 
@@ -14,5 +15,6 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun injHomeFragment(vm: HomeFragmentViewModel)
+    fun injLaterFragment(vm: LaterFragmentViewModel)
     fun injSettingsFragment(vm: SettingsFragmentViewModel)
 }

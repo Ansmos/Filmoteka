@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         val observableNetErr = viewModel.showNetworkErrorSnack
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
+            .subscribe({
                 val snack = Snackbar.make(view, R.string.m41_network_error, Snackbar.LENGTH_INDEFINITE)
                 if (it) {
                     snack.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
@@ -69,7 +69,9 @@ class HomeFragment : Fragment() {
                 } else {
                     if (snack.isShown) snack.dismiss()
                 }
-            }
+            },{
+
+            })
         (activity as MainActivity).compositeDisposable.add(observableNetErr)
         //Подписываемся на progressBar
         val observableProgBar = viewModel.showProgressBar
