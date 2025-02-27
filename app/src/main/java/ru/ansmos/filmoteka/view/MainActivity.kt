@@ -17,7 +17,6 @@ import ru.ansmos.filmoteka.view.fragments.*
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
     private lateinit var binding: ActivityMainBinding
-    val compositeDisposable = CompositeDisposable()
     private var backPressed = 0L
     var firstStart: Boolean = true
     var defaultFragmentTag: String = ""
@@ -101,11 +100,6 @@ class MainActivity : AppCompatActivity() {
             defaultFragmentTag = previoustFragmentTag
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
     }
 
     fun initBottomNavigationView() {

@@ -16,7 +16,6 @@ import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 
 class InteractorTmdb(private val repo: MainRepository, private val retrofitService: IThemoviedbApi, private val preferences: PreferenceProvider) {
-    //val scope = CoroutineScope(Dispatchers.IO)
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     var isProgressBarVisible = BehaviorSubject.create<Boolean>()
@@ -52,32 +51,7 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
-    fun getFilmsFromAPIRx(page: Int){
-        // Показываем ProgressBar
-        isProgressBarVisible.onNext(true)
-        retrofitService.getFilmListRx(getDefaultCategoryFromPreferences(), ApiKey.APIKEY_TMDB,  LANGUAGE, pageNumber)
-            .subscribeOn(Schedulers.io())
-            .map { filmsDTO ->
-                ConverterTmdb.convertApiListToDtoList(filmsDTO. tmdbFilmList)
-            }
-            .subscribe(
-                {
-                    repo.putFilms(ConverterRoom.convertFilmsToEntity(it))
-                    preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
-                    isProgressBarVisible.onNext(false)
-                    isNetworkError.onNext(false)
-                    ++pageNumber
-                    Log.i("interactor RX 1"," Put to db -OK data from NET")
-                },
-                {
-                    isProgressBarVisible.onNext(false)
-                    isNetworkError.onNext(true)
-                    Log.d("interactor", "Error get page $pageNumber from INET - Get from DB")
-                },
-            )
-    }
 
-    //fun getFilmsFromDB(pageIndex: Int, pageSize: Int): List<Film> = ConverterRoom.convertEntityToFilms(repo.getFilmsFromDB(pageIndex, pageSize))
     fun getFilmsFromDB(pageIndex: Int, pageSize: Int): Observable<List<Film>> {
         // Page в Api начинается с 1, в БД с 0
         // Берем все записи пока не сделали пагинацию.

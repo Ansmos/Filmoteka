@@ -24,17 +24,19 @@ import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.utils.AnimationHelper
+import ru.ansmos.filmoteka.utils.AutoDisposable
+import ru.ansmos.filmoteka.utils.addTo
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.view.rw.FilmAdapter
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 
 class HomeFragment : Fragment() {
-    private lateinit var binding : FragmentHomeBinding
 
+    private lateinit var binding : FragmentHomeBinding
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
-
+    private val autoDisposable = AutoDisposable()
     private lateinit var filmsAdapter: FilmAdapter
 
     init {
@@ -43,6 +45,7 @@ class HomeFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        autoDisposable.bindTo(lifecycle)
         return binding.root
     }
 
@@ -72,7 +75,8 @@ class HomeFragment : Fragment() {
             },{
 
             })
-        (activity as MainActivity).compositeDisposable.add(observableNetErr)
+            .addTo(autoDisposable)
+
         //Подписываемся на progressBar
         val observableProgBar = viewModel.showProgressBar
             .subscribeOn(Schedulers.io())
@@ -80,7 +84,8 @@ class HomeFragment : Fragment() {
             .subscribe{
                 binding.root.findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
             }
-        (activity as MainActivity).compositeDisposable.add(observableProgBar)
+            .addTo(autoDisposable)
+
         //Кладем нашу БД в RV
         val observableData = viewModel.filmListRxData
             .subscribeOn(Schedulers.io())
@@ -97,7 +102,7 @@ class HomeFragment : Fragment() {
             }, {
                 Log.i("FH", "onCompleted")
             })
-        (activity as MainActivity).compositeDisposable.add(observableData)
+            .addTo(autoDisposable)
     }
 
     private fun initPullToRefresh(){
