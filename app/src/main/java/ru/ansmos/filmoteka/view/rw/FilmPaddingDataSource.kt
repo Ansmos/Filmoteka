@@ -5,9 +5,10 @@ import android.util.Log
 import androidx.paging.PositionalDataSource
 
 import ru.ansmos.filmoteka.data.FakeRepo
+import ru.ansmos.filmoteka.data.IRepo
 import ru.ansmos.filmoteka.db.Film
 
-class FilmPaddingDataSource: PositionalDataSource<Film>() {
+class FilmPositionalDataSource1(private val repo: IRepo): PositionalDataSource<Film>() {
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Film>) {
         Log.i("PosDataSource", "loadInitial, requestedStartPosition = ${params.requestedStartPosition}" +

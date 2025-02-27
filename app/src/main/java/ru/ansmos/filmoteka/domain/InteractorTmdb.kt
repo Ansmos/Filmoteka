@@ -1,6 +1,7 @@
 package ru.ansmos.filmoteka.domain
 
 import android.util.Log
+import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -83,6 +84,15 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         val data = repo.getFilms(0, Int.MAX_VALUE)
         return ConverterRoom.convertRxEntityToFilms(data)
     }
+
+    fun getFilmsFromDB_Paging(): DataSource.Factory<Int, Film> {
+
+        val data = repo.getFilmsPaging()
+        return ConverterRoom.convertPagingEntityToFilms(data)
+    }
+
+
+
     fun clearFilmsInDB() : Int  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()

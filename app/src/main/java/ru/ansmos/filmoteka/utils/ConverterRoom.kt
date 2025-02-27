@@ -2,6 +2,7 @@ package ru.ansmos.filmoteka.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -32,6 +33,13 @@ object ConverterRoom {
             }
         return result
     }
+
+    fun convertPagingEntityToFilms(list: DataSource.Factory<Int, FilmEntity>): DataSource.Factory<Int, Film> {
+        return list.map {
+                convertEntityToFilm(it)
+        }
+    }
+
 
     fun convertRxEntityToFilms(list: Observable<List<FilmEntity>>): Observable<List<Film>> {
         val result = list.map {

@@ -14,6 +14,7 @@ import ru.ansmos.filmoteka.db.Film
 
 
 class FilmPaggingAdapter(val diffUtil: DiffUtil.ItemCallback<Film>): PagedListAdapter<Film, RecyclerView.ViewHolder>(diffUtil) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPaggingViewHolder {
         val binding = FilmItemBinding.inflate(LayoutInflater.from(parent.context), parent,false)
         return FilmPaggingViewHolder(binding)

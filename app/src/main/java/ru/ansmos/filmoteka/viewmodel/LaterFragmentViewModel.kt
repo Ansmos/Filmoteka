@@ -1,15 +1,16 @@
 package ru.ansmos.filmoteka.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.DataSource
 import androidx.paging.PagedList
-import androidx.paging.toLiveData
+import androidx.paging.RxPagedListBuilder
 import io.reactivex.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.data.FakeRepo
+import ru.ansmos.filmoteka.data.MainRepository
 import ru.ansmos.filmoteka.db.Film
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
@@ -27,30 +28,22 @@ class LaterFragmentViewModel: ViewModel() {
     var page : Int
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
     @Inject lateinit var interactor: InteractorTmdb
-    lateinit var filmPagedList : LiveData<PagedList<Film>>
+    //lateinit var filmPagedList : LiveData<PagedList<Film>>
     lateinit var filmPagedListRx : Observable<PagedList<Film>>
+    lateinit var filmDataSourceFactory : DataSource.Factory<Int, Film>
 
     //PageListConfig
     val config = PagedList.Config.Builder()
+        .setInitialLoadSizeHint(20)
         .setEnablePlaceholders(false)
-        .setPageSize(10)
+        .setPageSize(PAGE_SIZE_FROM_DB)
         .build()
-    val filmDataSourceFactory = FilmDataSourceFactory(FakeRepo())
+    val filmDataSourceFactoryFake = FilmDataSourceFactory(FakeRepo())
+    //val filmDataSourceFactory = interactor. MainRepository().getDataPDS()
+
+
 
     val infoDataSource = InfoDataSource(InfoStorage())
-    //PagedList
-
-
-
-
-/*
-    val dao = ITmdbFilmDao.getFilmsByPage()
-
-    val dao : LiveData<PagedList<Film>> = ITmdbFilmDao.getFilmsByPage_Paging().
-    val filmList: LiveData<PagedList<Film>> = FakeRepo().getDataDSFactory().toLiveData(page)
-    val filmListDAO: LiveData<PagedList<Film>> = FakeRepo().getDataDSFactory().toLiveData(page)
-    val filmListDAORx: Observable<PagedList<Film>> = FakeRepo().getDataDSFactory().toLiveData(page)
-*/
 
     init{
         App.instance.dagger.injLaterFragment(this)
@@ -58,8 +51,13 @@ class LaterFragmentViewModel: ViewModel() {
         showNetworkErrorSnack = interactor.isNetworkError
         page = interactor.pageNumber
 
-        filmPagedList = filmDataSourceFactory.toLiveData(config)
+        filmDataSourceFactory = interactor.getFilmsFromDB_Paging()
+        //filmPagedList = filmDataSourceFactory.toLiveData(config)
         //filmPagedListRx = filmDataSourceFactory.toObservable(config)
+
+        //filmPagedListRx = RxPagedListBuilder(filmDataSourceFactory, config).buildObservable()
+        filmPagedListRx = RxPagedListBuilder(interactor.getFilmsFromDB_Paging(), config)
+            .buildObservable()
 
         //Если прошло времени больше, чем настроено с последней загрузки, удаляем кеш.
         if (System.currentTimeMillis() - preference.getLastUploadSucsessDateTime() > TIME_TO_PURGE_CACH) {

@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.paging.toLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 //import androidx.paging.PagedList
 import ru.ansmos.filmoteka.R
@@ -57,8 +57,14 @@ class LaterFragment : Fragment() {
 
         //Adapter
         val filmPagingAdapter = FilmPaggingAdapter(FilmDiffCallback.FILM_COMPARATOR)
-        viewModel.filmPagedList.observe(viewLifecycleOwner, Observer<PagedList<Film>>{
+//        viewModel.filmPagedList.observe(viewLifecycleOwner, Observer<PagedList<Film>>{
+//            filmPagingAdapter.submitList(it)
+//        })
+        viewModel.filmPagedListRx.subscribe({
             filmPagingAdapter.submitList(it)
+            Log.i("paging","records: ${it.positionOffset}")
+        },{
+            println(it.message)
         })
 //        viewModel.filmPagedList.observe(viewLifecycleOwner, Observer<PagedList<Film>>{
 //            PagedList(filmPagingAdapter::submitList)

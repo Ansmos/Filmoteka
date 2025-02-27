@@ -12,7 +12,7 @@ import ru.ansmos.filmoteka.db.Film
 //    }
 //}
 
-class FakeRepo {
+class FakeRepo : IRepo {
 
     fun getDataDSFactory(startPosition :Int, loadSize : Int) : DataSource.Factory<Int, Film>{
         val list = films.subList(startPosition, startPosition + loadSize) as MutableList<Film>
@@ -24,7 +24,7 @@ class FakeRepo {
         return list as DataSource.Factory<Int, Film>
     }
 
-    fun getData(startPosition :Int, loadSize : Int) : MutableList<Film>{
+    override fun getData(startPosition :Int, loadSize : Int) : MutableList<Film>{
         val list = films.subList(startPosition, startPosition + loadSize) as MutableList<Film>
         return list
     }
