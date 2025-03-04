@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -18,6 +19,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.*
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
@@ -29,6 +32,8 @@ import ru.ansmos.filmoteka.utils.addTo
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.view.rw.FilmAdapter
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -57,7 +62,7 @@ class HomeFragment : Fragment() {
         initPullToRefresh()
         AnimationHelper.performFragmentCircularRevealAnimation(requireActivity().findViewById(R.id.home_fragment_root), requireActivity(), 1)
         //Подписываемся на сообщение о сетевой ошибке
-        val observableNetErr = viewModel.showNetworkErrorSnack
+        viewModel.showNetworkErrorSnack
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -78,7 +83,7 @@ class HomeFragment : Fragment() {
             .addTo(autoDisposable)
 
         //Подписываемся на progressBar
-        val observableProgBar = viewModel.showProgressBar
+        viewModel.showProgressBar
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe{
@@ -87,7 +92,7 @@ class HomeFragment : Fragment() {
             .addTo(autoDisposable)
 
         //Кладем нашу БД в RV
-        val observableData = viewModel.filmListRxData
+        viewModel.filmListRxData
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -146,43 +151,51 @@ class HomeFragment : Fragment() {
     }
 
     private fun initSearchView() {
-        // Поисковик сломался, но чинить его в задании не было. Еще тут API глючное, если просто задаешь выбрать страницу всего подряд, пишет Too mack results
-        // Обязательно нужно что-то в поиск добавлять, я добавил "One"
-        // TODO Пока оставлю, потом починю.
-/*
-        requireActivity().findViewById<SearchView>(R.id.search_view).apply {
-            setOnClickListener {
-                (it as SearchView).isIconified = false
-            }
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        val searchView = requireActivity().findViewById<SearchView>(R.id.search_view)
+        searchView.setOnClickListener {
+            (it as SearchView).isIconified = false
+        }
+
+        Observable.create(ObservableOnSubscribe<String> {
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 //Этот метод отрабатывает при нажатии кнопки "поиск" на софт клавиатуре
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    return true
+                    it.onNext(query)
+                    return false
                 }
+
                 //Этот метод отрабатывает на каждое изменения текста
                 override fun onQueryTextChange(newText: String): Boolean {
-                    //Если ввод пуст то вставляем в адаптер всю БД
-                    if (newText.isEmpty()){
-                        filmsAdapter.addItems(filmsDataBase)
-                        return true
-                    }
-                    //Фильтруем список на поискк подходящих сочетаний
-                    val result = filmsDataBase.filter {
-                        //Чтобы все работало правильно, нужно и запрос, и имя фильма приводить к нижнему регистру
-                        it.title.lowercase(Locale.getDefault()).contains(
-                            newText.lowercase(
-                                Locale.getDefault()
-                            )
-                        )
-                    }
-                    //Добавляем в адаптер
-                    filmsAdapter.addItems(result)
-                    return true
+                    filmsAdapter.clearItems()
+                    it.onNext(newText)
+                    return false
                 }
             })
-
-        }
-*/
+        })
+        .observeOn(Schedulers.io())
+            .map {
+                it.lowercase(Locale.getDefault()).trim()
+            }
+            .debounce(1, TimeUnit.SECONDS)
+            .filter {
+                viewModel.page = 1
+                viewModel.getFilmsSearchRx(it)
+                Log.i("Interactor:Search","query: $it")
+                it.isNotBlank()
+            }
+            .flatMap {
+                viewModel.getFilmsSearchRx(it)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                filmsAdapter.addItems(it)
+            },{
+                Log.i("Interactor:Search","error - ${it.message}")
+            },{
+                Log.i("Interactor:Search","success")
+            })
+            .addTo(autoDisposable)
     }
 
     private fun initRV() {

@@ -51,6 +51,12 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
         })
     }
 
+    fun getFilmsSearchFromApi(searchString: String): Observable<List<Film>> {
+        return retrofitService.getFilmsFromSearch(ApiKey.APIKEY_TMDB, LANGUAGE, searchString, 1)
+            .map {
+                ConverterTmdb.convertApiListToDtoList(it.tmdbFilmList)
+            }
+    }
 
     fun getFilmsFromDB(pageIndex: Int, pageSize: Int): Observable<List<Film>> {
         // Page в Api начинается с 1, в БД с 0
@@ -60,7 +66,6 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
     }
 
     fun getFilmsFromDB_Paging(): DataSource.Factory<Int, Film> {
-
         val data = repo.getFilmsPaging()
         return ConverterRoom.convertPagingEntityToFilms(data)
     }

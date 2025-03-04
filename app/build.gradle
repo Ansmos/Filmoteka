@@ -67,6 +67,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
     implementation "com.squareup.okhttp3:logging-interceptor:3.12.6"
+    implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
     //Dagger
     implementation 'com.google.dagger:dagger:2.45'
     kapt 'com.google.dagger:dagger-compiler:2.45'
@@ -82,7 +83,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
     implementation "androidx.paging:paging-rxjava2:$paging_version"
 
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+    //implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
     //RxJava
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
