@@ -52,8 +52,9 @@ class InteractorTmdb(private val repo: MainRepository, private val retrofitServi
     }
 
     fun getFilmsSearchFromApi(searchString: String): Observable<List<Film>> {
-        return retrofitService.getFilmsFromSearch(ApiKey.APIKEY_TMDB, LANGUAGE, searchString, 1)
+        return retrofitService.getFilmsFromSearch(ApiKey.APIKEY_TMDB, LANGUAGE, searchString, pageNumber)
             .map {
+                ++pageNumber
                 ConverterTmdb.convertApiListToDtoList(it.tmdbFilmList)
             }
     }

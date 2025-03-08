@@ -233,7 +233,17 @@ class HomeFragment : Fragment() {
                     if ((scrollY >= (heightRV - heightSV) - RV_LOADING_SHIFH) && scrollY > oldScrollY) {
                         if (!swIsSendQuery){  //Если запрос  еще не отправлен
                             //viewModel.page = ++pageNumber
-                            viewModel.getFilmsPageRx(true) //На следущую страницу
+                            val searchString = requireActivity().findViewById<SearchView>(R.id.search_view).query
+                            if (searchString.isNotBlank()) {
+                                viewModel.getFilmsSearchRx(searchString.toString()).subscribe({
+                                    filmsAdapter.addItems(it)
+                                },
+                                    {
+                                        Log.i("initRv", it.message.toString())
+                                    })
+                            } else {
+                                viewModel.getFilmsPageRx(true) //На следущую страницу
+                            }
                             swIsSendQuery = true
                         }
                     }
