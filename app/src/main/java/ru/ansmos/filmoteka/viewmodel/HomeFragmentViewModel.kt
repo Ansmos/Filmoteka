@@ -19,7 +19,14 @@ class HomeFragmentViewModel: ViewModel() {
     val filmListRxData : Observable<List<Film>>
     val showProgressBar : BehaviorSubject<Boolean> //Channel<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
     val showNetworkErrorSnack : BehaviorSubject<Boolean> //MutableLiveData<Boolean> = MutableLiveData()
-    var page : Int
+
+    var page = 1
+    get() = field
+    set(value){
+        interactor.pageNumber = value
+        field = value
+    }
+
     @Inject lateinit var preference: PreferenceProvider  //Для онлайн смены контента при смене настройки
     @Inject lateinit var interactor: InteractorTmdb
 
@@ -46,6 +53,10 @@ class HomeFragmentViewModel: ViewModel() {
 
     fun getFilmsPageRx(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
         interactor.getFilmsFromApi()
+    }
+
+    fun getFilmsSearchRx(searchString: String) : Observable<List<Film>> {
+        return interactor.getFilmsSearchFromApi(searchString)
     }
 
     companion object{

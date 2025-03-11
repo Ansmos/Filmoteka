@@ -2,6 +2,7 @@ package ru.ansmos.filmoteka.dagger.modules
 
 import dagger.Module
 import dagger.Provides
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,7 +45,8 @@ class RemoteModuleTmdb {
             //Добавляем кастомный клиент
             .client(okHttpClient)
             //добавляем JavaRx
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
 
     @Singleton

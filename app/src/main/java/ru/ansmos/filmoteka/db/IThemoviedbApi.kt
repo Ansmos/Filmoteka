@@ -23,4 +23,11 @@ interface IThemoviedbApi {
         @Query("page") page: Int
     ): Observable<TmdbFilmListDTO>
 
+    @GET("3/search/movie")
+    fun getFilmsFromSearch(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String,
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ): Observable<TmdbFilmListDTO>
 }
