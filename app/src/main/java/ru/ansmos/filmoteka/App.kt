@@ -1,19 +1,11 @@
 package ru.ansmos.filmoteka
 
 import android.app.Application
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import ru.ansmos.filmoteka.dagger.AppComponent
 import ru.ansmos.filmoteka.dagger.DaggerAppComponent
-import ru.ansmos.filmoteka.dagger.modules.DatabaseModule
 import ru.ansmos.filmoteka.dagger.modules.DomainModule
-import ru.ansmos.filmoteka.dagger.modules.RemoteModuleTmdb
 import ru.ansmos.filmoteka.data.MainRepository
-import ru.ansmos.filmoteka.db.ApiConstants
-import java.util.concurrent.TimeUnit
+import ru.dombuketa.net_tmdb.dagger.DaggerITmdbComponent
 
 class App : Application() {
     lateinit var repo: MainRepository
@@ -23,11 +15,13 @@ class App : Application() {
         super.onCreate()
         //Инициализируем экземпляр App, через который будем получать доступ к остальным переменным
         instance = this
+        val tmdbProvider = DaggerITmdbComponent.create()
         //Создаем компонент
         dagger = DaggerAppComponent.builder()
    //         .databaseModule(DatabaseModule())
    //         .remoteModule(RemoteModule())
    //         .remoteModuleTmdb(RemoteModuleTmdb())
+            .iTmdbProvider(tmdbProvider)
             .domainModule(DomainModule(this))
             .build()
     }

@@ -52,7 +52,7 @@ class HomeFragmentViewModel: ViewModel() {
     }
 
     fun getFilmsPageRx(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
-        interactor.getFilmsFromApi()
+        interactor.getFilmsFromApiRx()
     }
 
     fun getFilmsSearchRx(searchString: String) : Observable<List<Film>> {

@@ -1,0 +1,11 @@
+ext {
+    //Dagger
+    daggerVersion = '2.45'
+    dagger = "com.google.dagger:dagger:$daggerVersion"
+    daggerCompiler = "com.google.dagger:dagger-compiler:$daggerVersion"
+    //RxJava
+    rxJavaVersion = '3.0.0'
+    rxJava = "io.reactivex.rxjava3:rxjava:$rxJavaVersion"
+
+
+}

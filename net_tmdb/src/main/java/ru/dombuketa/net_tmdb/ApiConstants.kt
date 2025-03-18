@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.db
+package ru.dombuketa.net_tmdb
 
 object ApiConstants {
     // для https://www.themoviedb.org/

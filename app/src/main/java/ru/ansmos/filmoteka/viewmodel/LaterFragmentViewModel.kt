@@ -54,7 +54,7 @@ class LaterFragmentViewModel: ViewModel() {
     }
 
     fun getFilmsPage(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
-        interactor.getFilmsFromApi()
+        interactor.getFilmsFromApiRx()
     }
 
     companion object{

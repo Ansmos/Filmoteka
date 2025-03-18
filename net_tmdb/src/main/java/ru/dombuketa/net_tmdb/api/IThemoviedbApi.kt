@@ -1,10 +1,11 @@
-package ru.ansmos.filmoteka.db
+package ru.dombuketa.net_tmdb.api
 
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.dombuketa.net_tmdb.imp.TmdbFilmListDTO
 
 interface IThemoviedbApi {
     @GET("3/movie/{category}")

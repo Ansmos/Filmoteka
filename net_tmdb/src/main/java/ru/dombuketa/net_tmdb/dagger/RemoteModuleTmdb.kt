@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.dagger.modules
+package ru.dombuketa.net_tmdb.dagger
 
 import dagger.Module
 import dagger.Provides
@@ -6,11 +6,9 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.ansmos.filmoteka.BuildConfig
-import ru.ansmos.filmoteka.db.ApiConstants
-import ru.ansmos.filmoteka.db.IThemoviedbApi
+import ru.dombuketa.net_tmdb.BuildConfig
+import ru.dombuketa.net_tmdb.api.IThemoviedbApi
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -39,7 +37,7 @@ class RemoteModuleTmdb {
     fun provideRetrofitTmdb(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             //Указываем базовый URL из констант
-            .baseUrl(ApiConstants.BASE_URL_TMDB)
+            .baseUrl(ru.dombuketa.net_tmdb.ApiConstants.BASE_URL_TMDB)
             //Добавляем конвертер
             .addConverterFactory(GsonConverterFactory.create())
             //Добавляем кастомный клиент

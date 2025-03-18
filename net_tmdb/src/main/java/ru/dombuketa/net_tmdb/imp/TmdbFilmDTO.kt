@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.db
+package ru.dombuketa.net_tmdb.imp
 
 import com.google.gson.annotations.SerializedName
 
