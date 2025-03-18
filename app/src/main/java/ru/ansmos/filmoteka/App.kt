@@ -1,14 +1,16 @@
 package ru.ansmos.filmoteka
 
 import android.app.Application
+import android.content.Context
 import ru.ansmos.filmoteka.dagger.AppComponent
 import ru.ansmos.filmoteka.dagger.DaggerAppComponent
-import ru.ansmos.filmoteka.dagger.modules.DomainModule
-import ru.ansmos.filmoteka.data.MainRepository
+import ru.ansmos.filmoteka.dagger.DomainModule
+import ru.dombuketa.database_module.dagger.DaggerIDatabaseComponent
+import ru.dombuketa.database_module.dagger.IContextProvider
 import ru.dombuketa.net_tmdb.dagger.DaggerITmdbComponent
 
-class App : Application() {
-    lateinit var repo: MainRepository
+class App : Application(), IContextProvider {
+    lateinit var repo: ru.dombuketa.database_module.repositories.MainRepository
     lateinit var dagger: AppComponent
 
     override fun onCreate() {
@@ -16,12 +18,14 @@ class App : Application() {
         //Инициализируем экземпляр App, через который будем получать доступ к остальным переменным
         instance = this
         val tmdbProvider = DaggerITmdbComponent.create()
+        val databaseProvider = DaggerIDatabaseComponent.builder().iContextProvider(provideContext() as IContextProvider).build()
         //Создаем компонент
         dagger = DaggerAppComponent.builder()
    //         .databaseModule(DatabaseModule())
    //         .remoteModule(RemoteModule())
    //         .remoteModuleTmdb(RemoteModuleTmdb())
             .iTmdbProvider(tmdbProvider)
+            .iDatabaseProvider(databaseProvider)
             .domainModule(DomainModule(this))
             .build()
     }
@@ -32,4 +36,6 @@ class App : Application() {
         //Приватный сеттер, чтобы нельзя было в эту переменную присвоить что-либо другое
         private set
     }
+
+    override fun provideContext(): Context = this
 }

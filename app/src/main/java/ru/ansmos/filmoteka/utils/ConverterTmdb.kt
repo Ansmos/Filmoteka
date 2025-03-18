@@ -1,8 +1,6 @@
 package ru.ansmos.filmoteka.utils
 
-import ru.dombuketa.net_tmdb.ApiConstants
-import ru.ansmos.filmoteka.db.Film
-import ru.dombuketa.net_tmdb.imp.TmdbFilmDTO
+import ru.ansmos.filmoteka.bll.Film
 
 object ConverterTmdb {
     fun convertApiListToDtoList(list: List<ru.dombuketa.net_tmdb.imp.TmdbFilmDTO>?): List<Film> {

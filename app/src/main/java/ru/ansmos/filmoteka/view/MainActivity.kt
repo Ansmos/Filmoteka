@@ -8,10 +8,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.ActivityMainBinding
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.view.fragments.*
 
 class MainActivity : AppCompatActivity() {

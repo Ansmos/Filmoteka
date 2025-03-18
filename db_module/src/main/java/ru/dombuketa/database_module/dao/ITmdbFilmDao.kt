@@ -1,14 +1,9 @@
-package ru.ansmos.filmoteka.data.dao
+package ru.dombuketa.database_module.dao
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
-import androidx.paging.PagedList
 import androidx.room.*
 import io.reactivex.rxjava3.core.Observable
-import kotlinx.coroutines.flow.Flow
-import ru.ansmos.filmoteka.data.FakeRepo
-import ru.ansmos.filmoteka.data.entity.FilmEntity
-import ru.ansmos.filmoteka.db.Film
+import ru.dombuketa.database_module.entity.FilmEntity
 
 //Помечаем, что это не просто интерфейс, а Dao-объект
 @Dao

@@ -1,15 +1,13 @@
-package ru.ansmos.filmoteka.dagger.modules
+package ru.dombuketa.database_module.dagger
 
 import android.content.Context
-import android.provider.DocumentsContract.Root
 import androidx.room.Room
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import ru.ansmos.filmoteka.data.AppDatabase
-import ru.ansmos.filmoteka.data.DatabaseHelper
-import ru.ansmos.filmoteka.data.MainRepository
-import ru.ansmos.filmoteka.data.dao.ITmdbFilmDao
+import ru.dombuketa.database_module.dao.ITmdbFilmDao
+import ru.dombuketa.database_module.db.AppDatabase
+import ru.dombuketa.database_module.db.DatabaseHelper
+import ru.dombuketa.database_module.repositories.MainRepository
 import javax.inject.Singleton
 
 @Module
@@ -25,6 +23,7 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideRepository(filmDao: ITmdbFilmDao) = MainRepository(filmDao)
+    fun provideRepository(filmDao: ITmdbFilmDao) =
+        MainRepository(filmDao)
 }
 

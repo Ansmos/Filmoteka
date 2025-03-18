@@ -1,8 +1,7 @@
-package ru.ansmos.filmoteka.db
+package ru.ansmos.filmoteka.bll
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlin.random.Random
 
 @Parcelize
 data class Film (

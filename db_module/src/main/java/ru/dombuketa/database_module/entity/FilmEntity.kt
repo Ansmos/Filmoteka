@@ -1,10 +1,8 @@
-package ru.ansmos.filmoteka.data.entity
+package ru.dombuketa.database_module.entity
 
 import android.os.Parcelable
 import androidx.room.*
 import kotlinx.parcelize.Parcelize
-import ru.ansmos.filmoteka.utils.ConverterRoom
-import kotlin.random.Random
 
 @Parcelize
 @Entity(tableName = "cached_films", indices = [Index(value = ["title"], unique = true)])

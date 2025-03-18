@@ -1,6 +1,6 @@
 package ru.ansmos.filmoteka.view.rw
 import androidx.recyclerview.widget.DiffUtil
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 
 class FilmDiffCallback() {
 

@@ -46,6 +46,7 @@ android {
 dependencies {
 
     implementation project(path: ':net_tmdb')
+    implementation project(path: ':db_module')
 
     def lifecycle_version = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
@@ -76,10 +77,9 @@ dependencies {
     implementation "androidx.room:room-rxjava3:$room_version" //RxJava
     kapt "androidx.room:room-compiler:$room_version"
 
-    def paging_version = "2.1.2"// "3.2.1"//"2.1.2"
-    implementation "androidx.paging:paging-common:$paging_version"
-    implementation "androidx.paging:paging-runtime:$paging_version"
-    implementation "androidx.paging:paging-rxjava2:$paging_version"
+    //implementation paging
+    implementation pagingRuntime
+    implementation pagingRxJava
 
     //RxJava
     implementation rxJava

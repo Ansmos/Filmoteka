@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.core.ObservableOnSubscribe
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentHomeBinding
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.utils.AutoDisposable

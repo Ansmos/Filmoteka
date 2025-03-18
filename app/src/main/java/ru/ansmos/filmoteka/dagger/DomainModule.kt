@@ -1,10 +1,9 @@
-package ru.ansmos.filmoteka.dagger.modules
+package ru.ansmos.filmoteka.dagger
 
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import ru.ansmos.filmoteka.data.MainRepository
-import ru.dombuketa.net_tmdb.api.IThemoviedbApi
+import ru.dombuketa.database_module.repositories.MainRepository
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import javax.inject.Singleton
@@ -24,7 +23,7 @@ class DomainModule(val context: Context) {
 
     @Singleton
     @Provides
-    fun provideInteractorTmdb(repository: MainRepository, tmdbApi: ru.dombuketa.net_tmdb.api.IThemoviedbApi, preferences: PreferenceProvider)
+    fun provideInteractorTmdb(repository: ru.dombuketa.database_module.repositories.MainRepository, tmdbApi: ru.dombuketa.net_tmdb.api.IThemoviedbApi, preferences: PreferenceProvider)
             = InteractorTmdb(repository, tmdbApi, preferences )
 
 }

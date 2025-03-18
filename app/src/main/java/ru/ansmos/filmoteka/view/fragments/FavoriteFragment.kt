@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentFavoriteBinding
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.utils.AnimationHelper
 import ru.ansmos.filmoteka.decor.FilmsRVItemDecorator
 import ru.ansmos.filmoteka.view.rw.FilmAdapter

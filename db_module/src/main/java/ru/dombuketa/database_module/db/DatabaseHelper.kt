@@ -1,4 +1,4 @@
-package ru.ansmos.filmoteka.data
+package ru.dombuketa.database_module.db
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

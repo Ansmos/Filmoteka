@@ -2,14 +2,11 @@ package ru.ansmos.filmoteka.view.rw
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FilmItemBinding
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
 class FilmAdapter(private val clickListener: IOnItemClixkListener) :

@@ -1,15 +1,13 @@
-package ru.ansmos.filmoteka.data
+package ru.dombuketa.database_module.repositories
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
-import kotlinx.coroutines.flow.Flow
-import ru.ansmos.filmoteka.data.dao.ITmdbFilmDao
-import ru.ansmos.filmoteka.data.entity.FilmEntity
-import ru.ansmos.filmoteka.db.Film
+import ru.dombuketa.database_module.dao.ITmdbFilmDao
+import ru.dombuketa.database_module.entity.FilmEntity
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
-class MainRepository(private val filmDao: ITmdbFilmDao)  {
+class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao)  {
 
     fun putFilms(films: List<FilmEntity>) {
         //Запросы в БД должны быть в отдельном потоке
@@ -22,7 +20,7 @@ class MainRepository(private val filmDao: ITmdbFilmDao)  {
         return filmDao.getFilmsByPage(pageIndex, pageSize)
     }
 
-    fun getFilmsPaging(): DataSource.Factory<Int, FilmEntity> {
+    fun getFilmsPaging(): androidx.paging.DataSource.Factory<Int, FilmEntity> {
         return filmDao.getFilms_Paging()
     }
 

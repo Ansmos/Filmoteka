@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Filmoteka"
 include ':app'
 include ':net_tmdb'
+include ':db_module'

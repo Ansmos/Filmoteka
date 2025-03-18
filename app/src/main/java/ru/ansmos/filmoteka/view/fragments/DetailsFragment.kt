@@ -27,8 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
-import ru.dombuketa.net_tmdb.ApiConstants
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.viewmodel.DetailsFragmentViewModel
 
 class DetailsFragment : Fragment() {

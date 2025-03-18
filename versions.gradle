@@ -6,6 +6,17 @@ ext {
     //RxJava
     rxJavaVersion = '3.0.0'
     rxJava = "io.reactivex.rxjava3:rxjava:$rxJavaVersion"
+    //Room
+    roomVersion = '2.4.0'
+    room = "androidx.room:room-runtime:$roomVersion"
+    roomRxJava = "androidx.room:room-rxjava3:$roomVersion"
+    roomCompiler = "androidx.room:room-compiler:$roomVersion"
+    //paging
+    pagingVersion = "2.1.2"
+    paging = "androidx.paging:paging-common:$pagingVersion"
+    pagingRuntime = "androidx.paging:paging-runtime:$pagingVersion"
+    pagingRxJava = "androidx.paging:paging-rxjava2:$pagingVersion"
+
 
 
 }
