@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.ansmos.filmoteka.App
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import javax.inject.Inject
@@ -54,7 +54,7 @@ class LaterFragmentViewModel: ViewModel() {
     }
 
     fun getFilmsPage(toNextPage :Boolean) {    //Вернем статус запроса из сети для потребителей View
-        interactor.getFilmsFromApi()
+        interactor.getFilmsFromApiRx()
     }
 
     companion object{

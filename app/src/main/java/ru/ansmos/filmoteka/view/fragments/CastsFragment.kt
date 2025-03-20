@@ -10,12 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import okhttp3.*
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentCastsBinding
 import ru.ansmos.filmoteka.utils.AnimationHelper

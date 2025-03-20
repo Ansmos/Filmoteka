@@ -2,57 +2,50 @@ package ru.ansmos.filmoteka.domain
 
 import android.util.Log
 import androidx.paging.DataSource
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.ansmos.filmoteka.data.MainRepository
-import ru.ansmos.filmoteka.db.*
+import ru.dombuketa.database_module.repositories.MainRepository
+import ru.ansmos.filmoteka.bll.*
 import ru.ansmos.filmoteka.utils.ConverterRoom
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 
-class InteractorTmdb(private val repo: MainRepository, private val retrofitService: IThemoviedbApi, private val preferences: PreferenceProvider) {
+class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories.MainRepository, private val retrofitService: ru.dombuketa.net_tmdb.api.IThemoviedbApi, private val preferences: PreferenceProvider) {
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     var isProgressBarVisible = BehaviorSubject.create<Boolean>()
     var isNetworkError = BehaviorSubject.create<Boolean>()
     var pageNumber = 1
 
-    fun getFilmsFromApi() {
+    fun getFilmsFromApiRx() {
         isProgressBarVisible.onNext(true)
         isNetworkError.onNext(false)
-        retrofitService.getFilmList(getDefaultCategoryFromPreferences(), ApiKey.APIKEY_TMDB, LANGUAGE, pageNumber).enqueue(object: Callback<TmdbFilmListDTO> {
-            override fun onResponse(call: Call<TmdbFilmListDTO>, response: Response<TmdbFilmListDTO>) {
-                //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
-                val listFilms = ConverterTmdb.convertApiListToDtoList(response.body()?.tmdbFilmList)
-                //Кладем фильмы в бд
-                Completable.fromSingle<List<Film>> {
-                        repo.putFilms(ConverterRoom.convertFilmsToEntity(listFilms))
-                    }
-                    .subscribe({
-                        Log.i("PutToDB", "interactor - put to db success.")
-                    })
-                preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
-                isProgressBarVisible.onNext(false)
-                isNetworkError.onNext(false)
-                ++pageNumber
+        retrofitService.getFilmListRx(getDefaultCategoryFromPreferences(), ru.dombuketa.net_tmdb.ApiKey.APIKEY_TMDB, LANGUAGE, pageNumber)
+            .subscribeOn(Schedulers.io())
+            .map {
+                ConverterTmdb.convertApiListToDtoList(it.tmdbFilmList)
             }
-
-            override fun onFailure(call: Call<TmdbFilmListDTO>, t: Throwable) {
-                t.printStackTrace()
-                isProgressBarVisible.onNext(false)
-                isNetworkError.onNext(true)
-                Log.d("interactor", "Error get page $pageNumber from INET - Get from DB")
-            }
-        })
+            .subscribe(
+                {
+                    Log.i("PutToDB", "interactor - put to db success.")
+                    repo.putFilms(ConverterRoom.convertFilmsToEntity(it))
+                    preferences.saveLastUploadSucsessDateTime(System.currentTimeMillis())
+                    isProgressBarVisible.onNext(false)
+                    isNetworkError.onNext(false)
+                    ++pageNumber
+                },
+                {
+                    Log.d("interactor", "Error get page $pageNumber from INET - Get from DB")
+                    it.printStackTrace()
+                    isProgressBarVisible.onNext(false)
+                    isNetworkError.onNext(true)
+                }
+            )
     }
 
     fun getFilmsSearchFromApi(searchString: String): Observable<List<Film>> {
-        return retrofitService.getFilmsFromSearch(ApiKey.APIKEY_TMDB, LANGUAGE, searchString, pageNumber)
+        return retrofitService.getFilmsFromSearch(ru.dombuketa.net_tmdb.ApiKey.APIKEY_TMDB, LANGUAGE, searchString, pageNumber)
             .map {
                 ++pageNumber
                 ConverterTmdb.convertApiListToDtoList(it.tmdbFilmList)

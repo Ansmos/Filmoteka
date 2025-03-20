@@ -6,7 +6,7 @@ import android.view.animation.AlphaAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.ansmos.filmoteka.databinding.FilmItemBinding
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 
 //В конструктор класс передается layout, который мы создали(film_item.xml)  android.support.v7.widget.
 //android.support.v7.widget.

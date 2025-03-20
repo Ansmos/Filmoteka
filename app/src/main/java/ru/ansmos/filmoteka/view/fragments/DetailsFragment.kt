@@ -7,19 +7,14 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -32,11 +27,8 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
-import ru.ansmos.filmoteka.db.ApiConstants
-import ru.ansmos.filmoteka.db.Film
+import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.viewmodel.DetailsFragmentViewModel
-import ru.ansmos.filmoteka.viewmodel.SettingsFragmentViewModel
-import java.util.jar.Manifest
 
 class DetailsFragment : Fragment() {
     private lateinit var binding : FragmentDetailsBinding
@@ -87,7 +79,7 @@ class DetailsFragment : Fragment() {
             binding.progressBar.isVisible = true
             //Создаем через async, так как нам нужен результат от работы, то есть Bitmap
             val job = scope.async {
-                viewModel.loadWallpaper(ApiConstants.IMAGES_URL_TMDB + "original" + film.poster)
+                viewModel.loadWallpaper(ru.dombuketa.net_tmdb.ApiConstants.IMAGES_URL_TMDB + "original" + film.poster)
             }
             //Сохраняем в галерею, как только файл загрузится
             if (job.await() != null) {
