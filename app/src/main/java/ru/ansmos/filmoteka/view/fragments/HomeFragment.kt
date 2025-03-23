@@ -86,9 +86,11 @@ class HomeFragment : Fragment() {
         viewModel.showProgressBar
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
+            .subscribe({
                 binding.root.findViewById<ProgressBar>(R.id.progress_bar).isVisible = it
-            }
+            },{
+                it.printStackTrace()
+            })
             .addTo(autoDisposable)
 
         //Кладем нашу БД в RV

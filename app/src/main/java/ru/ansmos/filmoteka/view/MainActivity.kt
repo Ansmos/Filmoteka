@@ -1,5 +1,8 @@
 package ru.ansmos.filmoteka.view
 
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -11,21 +14,34 @@ import com.airbnb.lottie.LottieAnimationView
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.ActivityMainBinding
 import ru.ansmos.filmoteka.bll.Film
+import ru.ansmos.filmoteka.services.StateEventChecker
 import ru.ansmos.filmoteka.view.fragments.*
 
 class MainActivity : AppCompatActivity() {
     var darkMode = AppCompatDelegate.getDefaultNightMode()
     private lateinit var binding: ActivityMainBinding
     private var backPressed = 0L
+    private lateinit var statteChecker : BroadcastReceiver
     var firstStart: Boolean = true
     var defaultFragmentTag: String = ""
     var previoustFragmentTag: String = ""  //Для фракмента с деталями, неизвестно, из какого фрагмента он вызван
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         //Передаем его в метод
         setContentView(binding.root)
+        //Инициализируем проверщик состояний
+        statteChecker = StateEventChecker()
+        val intentFilters = IntentFilter().apply {
+            addAction(Intent.ACTION_BATTERY_LOW)
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+        }
+        registerReceiver(statteChecker, intentFilters)
+
+
         initBottomNavigationView()
         //Запускаем анимацию при старте
         val lottieAnimationView: LottieAnimationView = findViewById(R.id.lottie_anim)
@@ -137,6 +153,11 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(statteChecker)
     }
 
     companion object consts{
