@@ -52,7 +52,10 @@ class MainActivity : AppCompatActivity() {
                 lottieAnimationView.visibility = View.GONE
 
                 // запускаем фрагмент при окончании анимации
-                changeFragment(HomeFragment(), "home")
+                val tag = "home"
+                val fragment = checkFragmentExistance(tag)
+                changeFragment(fragment?: HomeFragment(), tag)
+//                changeFragment(HomeFragment(), "home")
             }
             override fun onAnimationCancel(animation: android.animation.Animator?) {
             }
