@@ -26,6 +26,7 @@ class Notification() {
 
     companion object {
         const val CHANNEL_ID = "FilmotekaChannel"
+        const val CHANNEL_TILTLE = "Не забыть посомтреть."
 
         fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -40,12 +41,13 @@ class Notification() {
 
         fun createNotification(context: Context, film: Film) {
             val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra("film", film)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT )
             val notificationManager = NotificationManagerCompat.from(context)
             val notifBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
                 setSmallIcon(R.drawable.ic_btn_later)
                 setContentText(film.title)
-                setContentTitle("Не забыть посомтреть.")
+                setContentTitle(CHANNEL_TILTLE)
                 priority = NotificationCompat.PRIORITY_DEFAULT
                 setContentIntent((pendingIntent))
                 setAutoCancel(true)

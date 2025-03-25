@@ -50,12 +50,17 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onAnimationEnd(animation: android.animation.Animator?) {
                 lottieAnimationView.visibility = View.GONE
-
-                // запускаем фрагмент при окончании анимации
-                val tag = "home"
-                val fragment = checkFragmentExistance(tag)
-                changeFragment(fragment?: HomeFragment(), tag)
-//                changeFragment(HomeFragment(), "home")
+                // Проверяем, если есть фильм в интенте от нотификации
+                val filmFromNotification = intent.getParcelableExtra<Film>("film")
+                // Если есть, запускаем детальный фрагмент, если нет, - основной
+                if (filmFromNotification != null){
+                    launchDetailsFragment(filmFromNotification)
+                } else {
+                    // запускаем фрагмент при окончании анимации
+                    val tag = "home"
+                    val fragment = checkFragmentExistance(tag)
+                    changeFragment(fragment?: HomeFragment(), tag)
+                }
             }
             override fun onAnimationCancel(animation: android.animation.Animator?) {
             }
