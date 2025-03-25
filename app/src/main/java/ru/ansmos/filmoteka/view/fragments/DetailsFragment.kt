@@ -28,7 +28,9 @@ import kotlinx.coroutines.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
 import ru.ansmos.filmoteka.bll.Film
+import ru.ansmos.filmoteka.services.Notification
 import ru.ansmos.filmoteka.viewmodel.DetailsFragmentViewModel
+import ru.dombuketa.net_tmdb.ApiConstants
 
 class DetailsFragment : Fragment() {
     private lateinit var binding : FragmentDetailsBinding
@@ -53,7 +55,7 @@ class DetailsFragment : Fragment() {
         initFabs()
         binding.detailsToolbar.title = film.title
         Glide.with(this)
-            .load(film.poster)
+            .load(ApiConstants.IMAGES_URL_TMDB + "w780" + film.poster)
             .centerCrop()
             .into(binding.detailsPoster)
         binding.detailsDescription.text = film.description
@@ -203,9 +205,15 @@ class DetailsFragment : Fragment() {
             //Запускаем наше активити
             startActivity(Intent.createChooser(intent, "Отправить к:"))
         }
+
         requireActivity().findViewById<FloatingActionButton>(R.id.details_fab_download_wp).setOnClickListener {
             performAsyncLoadOfPoster()
         }
+
+        requireActivity().findViewById<FloatingActionButton>(R.id.later_fab).setOnClickListener {
+            Notification.createNotification(requireContext(), film)
+        }
+
     }
 }
 

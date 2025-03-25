@@ -1,6 +1,7 @@
 package ru.dombuketa.net_tmdb.api
 
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -31,4 +32,10 @@ interface IThemoviedbApi {
         @Query("query") query: String,
         @Query("page") page: Int
     ): Observable<TmdbFilmListDTO>
+
+    fun getPopularFilmsRx(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String,
+        @Query("page") page: Int
+    ) : Single<TmdbFilmListDTO>
 }

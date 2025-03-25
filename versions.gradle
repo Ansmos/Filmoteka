@@ -16,7 +16,9 @@ ext {
     paging = "androidx.paging:paging-common:$pagingVersion"
     pagingRuntime = "androidx.paging:paging-runtime:$pagingVersion"
     pagingRxJava = "androidx.paging:paging-rxjava2:$pagingVersion"
-
-
+    //paging3
+    paging3Version = "3.0.1"
+    paging3Runtime = "androidx.paging:paging-runtime:$paging3Version"
+    paging3RxJava = "androidx.paging:paging-rxjava2:$paging3Version"
 
 }

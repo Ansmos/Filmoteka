@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.ansmos.filmoteka.databinding.FilmItemBinding
 import ru.ansmos.filmoteka.bll.Film
+import ru.dombuketa.net_tmdb.ApiConstants
 
 //В конструктор класс передается layout, который мы создали(film_item.xml)
 class FilmViewHolder(var binding: FilmItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -16,7 +17,7 @@ class FilmViewHolder(var binding: FilmItemBinding) : RecyclerView.ViewHolder(bin
         //poster.setImageResource(film.poster) Оставил на память
         Glide.with(itemView)
             //Загружаем сам ресурс
-            .load(film.poster)
+            .load(ApiConstants.IMAGES_URL_TMDB + "w780" + film.poster)
             //Центруем изображение
             .centerCrop()
             //Указываем ImageView, куда будем загружать изображение
