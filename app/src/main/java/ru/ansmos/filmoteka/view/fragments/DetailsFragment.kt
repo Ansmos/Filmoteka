@@ -211,7 +211,8 @@ class DetailsFragment : Fragment() {
         }
 
         requireActivity().findViewById<FloatingActionButton>(R.id.later_fab).setOnClickListener {
-            Notification.createNotification(requireContext(), film)
+            //Notification.createNotification(requireContext(), film)
+            Notification.notificationSet(requireContext(), film)
         }
 
     }
