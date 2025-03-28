@@ -1,0 +1,80 @@
+package ru.ansmos.filmoteka.view.rw
+
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import ru.ansmos.filmoteka.R
+import ru.ansmos.filmoteka.databinding.FilmItemBinding
+import ru.ansmos.filmoteka.bll.Film
+import ru.ansmos.filmoteka.bll.Notification
+import ru.ansmos.filmoteka.databinding.FilmNotificationItemBinding
+
+//в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
+class NotificationAdapter(private val clickListener: IOnItemClicListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+    private var items = mutableListOf<Notification>()      //Здесь у нас хранится список элементов для RV
+
+    //В этом методе мы привязываем наш ViewHolder и передаем туда "надутую" верстку нашего фильма
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val binding = FilmNotificationItemBinding.inflate(LayoutInflater.from(parent.context), parent,false)
+        return FilmNotificationViewHolder(binding)
+    }
+
+    //В этом методе будет привязка полей из объекта Film к View из film_item.xml
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //Проверяем какой у нас ViewHolder
+        when (holder){
+            is FilmNotificationViewHolder -> {
+                //Вызываем метод bind(), который мы создали, и передаем туда объект
+                //из нашей базы данных с указанием позиции
+                holder.bund(items[position])
+                //Обрабатываем нажатие на весь элемент целиком(можно сделать на отдельный элемент
+                //например, картинку) и вызываем метод нашего листенера, который мы получаем из
+                //конструктора адаптера
+                holder.itemView.findViewById<CardView>(R.id.item_container).setOnClickListener{
+                    clickListener.click(items[position], false)
+                }
+                holder.itemView.findViewById<ImageButton>(R.id.btn_set).setOnClickListener {
+                    clickListener.click(items[position], true)
+                    Log.i("Notif_Adapter","onClick")
+                }
+            }
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return items.size
+    }
+
+    fun getItems() : List<Notification> = items.toList()
+
+    //Метод очистки адаптера
+    fun clearItems(){
+        items.clear()
+    }
+
+    //Метод для добавления объектов в наш список
+    fun addItems(list: List<Notification>){
+        //items.clear()
+        items.addAll(list)
+        notifyDataSetChanged()  //если без DiffUtils
+    }
+
+    fun replaceItems(list: List<Notification>){
+        items = list.toMutableList()
+    }
+
+    //Интерфейс для обработки кликов
+    //actionSet - true Измеить настройку, иначе открыть карточку фильма
+    interface IOnItemClicListener{
+        fun click(notification: Notification, actionSet: Boolean)
+    }
+
+}
+
+
+

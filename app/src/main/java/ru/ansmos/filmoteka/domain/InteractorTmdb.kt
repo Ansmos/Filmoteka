@@ -3,6 +3,7 @@ package ru.ansmos.filmoteka.domain
 import android.util.Log
 import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import ru.dombuketa.database_module.repositories.MainRepository
@@ -10,6 +11,7 @@ import ru.ansmos.filmoteka.bll.*
 import ru.ansmos.filmoteka.utils.ConverterRoom
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
+import ru.dombuketa.net_tmdb.ApiKey
 
 class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories.MainRepository, private val retrofitService: ru.dombuketa.net_tmdb.api.IThemoviedbApi, private val preferences: PreferenceProvider) {
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
@@ -21,7 +23,7 @@ class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories
     fun getFilmsFromApiRx() {
         isProgressBarVisible.onNext(true)
         isNetworkError.onNext(false)
-        retrofitService.getFilmListRx(getDefaultCategoryFromPreferences(), ru.dombuketa.net_tmdb.ApiKey.APIKEY_TMDB, LANGUAGE, pageNumber)
+        retrofitService.getFilmListRx(getDefaultCategoryFromPreferences(), ApiKey.APIKEY_TMDB, LANGUAGE, pageNumber)
             .subscribeOn(Schedulers.io())
             .map {
                 ConverterTmdb.convertApiListToDtoList(it.tmdbFilmList)
@@ -44,6 +46,17 @@ class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories
             )
     }
 
+    fun getFilmFromAPI(id: Int) : Observable<Film> {
+        isProgressBarVisible.onNext(true)
+        return retrofitService.getFilm(id, ApiKey.APIKEY_TMDB, "ru-RU")
+            .subscribeOn(Schedulers.io())
+            .map {
+                isProgressBarVisible.onNext(false)
+                ConverterTmdb.convertApiToDto(it)
+            }
+            .doOnError { isProgressBarVisible.onNext(false) }
+    }
+
     fun getFilmsSearchFromApi(searchString: String): Observable<List<Film>> {
         return retrofitService.getFilmsFromSearch(ru.dombuketa.net_tmdb.ApiKey.APIKEY_TMDB, LANGUAGE, searchString, pageNumber)
             .map {
@@ -64,8 +77,6 @@ class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories
         return ConverterRoom.convertPagingEntityToFilms(data)
     }
 
-
-
     fun clearFilmsInDB() : Int  = repo.clearAllFilms()
 
     fun getDefaultCategoryFromPreferences() = preferences.getDefCategory()
@@ -73,6 +84,58 @@ class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories
     fun saveDefaultCategoryToPreferences(category: String) = preferences.saveDefCategory(category)
     //После очистке кеша инициируем обновление списка на домашнем экране, сначала попытаясь достать данные из сети 39*
     fun gotoDefaultCategory() = preferences.currentCategory.postValue(preferences.getDefCategory())
+
+
+// Нотификации **************************************************
+    fun getNotifications(): Observable<List<Notification>> {
+        return ConverterRoom.convertRxEntityToNotifications(repo.getAllNotifications())
+    }
+
+    fun insertNotification(notification: Notification) {
+        Single.just(true)
+            .observeOn(Schedulers.io())
+            .subscribe( {
+                repo.insertNotification(ConverterRoom.convertNotificationToEntity(notification))
+                println("!!! Нотификация сохранена в БД")
+            },{
+                println("!!! ОШИБКА: Нотификация не сохранена в БД" + it.message)
+            })
+    }
+
+    fun updateNotification(notification: Notification) {
+        Single.just(true)
+            .observeOn(Schedulers.io())
+            .subscribe( {
+                repo.updateNotification(ConverterRoom.convertNotificationToEntity(notification))
+                println("!!! Нотификация Обновлена в БД")
+            },{
+                println("!!! ОШИБКА: Нотификация не обновлена в БД" + it.message)
+            })
+    }
+
+
+    fun cancelNotification(film_id: Int){
+        Single.just(true)
+            .observeOn(Schedulers.io())
+            .subscribe( {
+                repo.cancelNotification(film_id)
+                println("!!! Нотификация отмененав в БД")
+            },{
+                println("!!! ОШИБКА: Нотификация не отменена БД" + it.message)
+            })
+    }
+    fun cancelAllNotifications(){
+        Single.just(true)
+            .observeOn(Schedulers.io())
+            .subscribe( {
+                repo.cancelAllNotification()
+                println("!!! Все нотификации отменены в БД")
+            },{
+                println("!!! ОШИБКА: Нотификации не отменены в БД" + it.message)
+            })
+    }
+
+
 
     companion object{
         const val LANGUAGE = "ru-RU"

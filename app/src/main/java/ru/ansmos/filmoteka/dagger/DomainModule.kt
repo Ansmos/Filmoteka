@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import ru.dombuketa.database_module.repositories.MainRepository
 import ru.ansmos.filmoteka.domain.InteractorTmdb
+import ru.ansmos.filmoteka.services.NotificationHelper
 import ru.ansmos.filmoteka.utils.PreferenceProvider
 import javax.inject.Singleton
 
@@ -25,5 +26,9 @@ class DomainModule(val context: Context) {
     @Provides
     fun provideInteractorTmdb(repository: ru.dombuketa.database_module.repositories.MainRepository, tmdbApi: ru.dombuketa.net_tmdb.api.IThemoviedbApi, preferences: PreferenceProvider)
             = InteractorTmdb(repository, tmdbApi, preferences )
+
+    @Singleton
+    @Provides
+    fun provideNotificationHelper() = NotificationHelper
 
 }

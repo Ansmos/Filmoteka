@@ -15,6 +15,7 @@
     <dimen name="m24.layout_margin.text">8dp</dimen>
 
     <dimen name="m31.h.item_rv">150dp</dimen>
+    <dimen name="m49.h.item_notif_rv">150dp</dimen>
     <dimen name="m31.elev.item_rv">1dp</dimen>
     <dimen name="m31.trsl_z.item_rv">5dp</dimen>
     <dimen name="m31.h.item_rv.image">150dp</dimen>
@@ -27,5 +28,6 @@
 
     <dimen name="m38.layout_margin_lr">11dp</dimen>
     <dimen name="m42.trsl_z.fab_download">10dp</dimen>
+    <dimen name="m49.trsl_y.imgbutton_seelater">-20dp</dimen>
 
 </resources>

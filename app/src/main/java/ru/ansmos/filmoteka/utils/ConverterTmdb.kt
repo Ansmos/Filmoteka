@@ -1,24 +1,29 @@
 package ru.ansmos.filmoteka.utils
 
 import ru.ansmos.filmoteka.bll.Film
+import ru.dombuketa.net_tmdb.imp.TmdbFilmDTO
 
 object ConverterTmdb {
-    fun convertApiListToDtoList(list: List<ru.dombuketa.net_tmdb.imp.TmdbFilmDTO>?): List<Film> {
+    fun convertApiListToDtoList(list: List<TmdbFilmDTO>?): List<Film> {
         val result = mutableListOf<Film>()
         list?.forEach {
-            result.add(
-                Film(
-                    id = it.id.toString(),
-                    title = it.title,
-                    //poster = ru.dombuketa.net_tmdb.ApiConstants.IMAGES_URL_TMDB + "w780" + it.posterPath,
-                    poster = it.posterPath,
-                    description = it.overview,
-                    releaseDate =  it.releaseDate, // LocalDate.parse(it.releaseDate).year,
-                    rating = it.voteAverage,
-                    isInFavorites = false
-                )
+            result.add( convertApiToDto(it)
             )
         }
         return result
     }
+
+    fun convertApiToDto(filmDto: TmdbFilmDTO): Film {
+        val result = mutableListOf<Film>()
+           return Film(
+                id = filmDto.id.toString(),
+                title = filmDto.title,
+                poster = filmDto.posterPath,
+                description = filmDto.overview,
+                releaseDate =  filmDto.releaseDate, // LocalDate.parse(it.releaseDate).year,
+                rating = filmDto.voteAverage,
+                isInFavorites = false
+            )
+    }
+
 }

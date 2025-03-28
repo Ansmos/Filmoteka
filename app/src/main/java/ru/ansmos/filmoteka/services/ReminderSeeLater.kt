@@ -9,7 +9,7 @@ class ReminderSeeLater : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val bundle = intent?.getBundleExtra(FILM_BUNDLE)
         val film : Film = bundle?.get(FILM) as Film
-        Notification.createNotification(context!!, film)
+        NotificationHelper.createNotification(context!!, film)
     }
 
     companion object{

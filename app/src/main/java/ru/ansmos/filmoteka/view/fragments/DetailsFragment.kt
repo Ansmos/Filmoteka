@@ -28,7 +28,7 @@ import kotlinx.coroutines.*
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.FragmentDetailsBinding
 import ru.ansmos.filmoteka.bll.Film
-import ru.ansmos.filmoteka.services.Notification
+import ru.ansmos.filmoteka.services.NotificationHelper
 import ru.ansmos.filmoteka.viewmodel.DetailsFragmentViewModel
 import ru.dombuketa.net_tmdb.ApiConstants
 
@@ -212,7 +212,7 @@ class DetailsFragment : Fragment() {
 
         requireActivity().findViewById<FloatingActionButton>(R.id.later_fab).setOnClickListener {
             //Notification.createNotification(requireContext(), film)
-            Notification.notificationSet(requireContext(), film)
+            NotificationHelper.notificationSet(requireContext(), film)
         }
 
     }

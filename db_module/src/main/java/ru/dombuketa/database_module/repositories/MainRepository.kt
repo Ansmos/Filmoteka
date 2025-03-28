@@ -1,10 +1,12 @@
 package ru.dombuketa.database_module.repositories
 
+import android.app.Notification
 import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
 import ru.dombuketa.database_module.dao.INotificationDao
 import ru.dombuketa.database_module.dao.ITmdbFilmDao
 import ru.dombuketa.database_module.entity.FilmEntity
+import ru.dombuketa.database_module.entity.NotificationEntity
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -40,17 +42,21 @@ class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao, priv
     }
 
 // Нотификации
-  /*
-    fun getActiveNotifications(): Observable<List<Notification>> = filmDao.getNotifications()
 
-    fun putNotificationToDB(n: Notification) {
-        // Для упрощения деактивирую старый и вставляю новый
-        filmDao.deactivateNotification(n.filmId)
-        filmDao.insertNotification(n)
+    fun getAllNotifications(): Observable<List<NotificationEntity>> = notificationDao.getAllNotifications()
+
+    fun insertNotification(notification: NotificationEntity) {
+        notificationDao.insertNotification(notification)
     }
 
-    fun deactivateNotification(film_id: Int) = filmDao.deactivateNotification(film_id)
+    fun updateNotification(notification: NotificationEntity) {
+        // Для упрощения деактивирую старый и вставляю новый
+        notificationDao.cancelNotification(notification.filmId)
+        notificationDao.insertNotification(notification)
+    }
 
-    fun deactivateAllNotification() = filmDao.clearAllNotifications()
-*/
+    fun cancelNotification(film_id: Int) = notificationDao.cancelNotification(film_id)
+
+    fun cancelAllNotification() = notificationDao.cancelAllNotifications()
+
 }
