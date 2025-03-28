@@ -1,6 +1,7 @@
 package ru.ansmos.filmoteka.dagger
 
 import dagger.Component
+import ru.ansmos.filmoteka.viewmodel.CastsFragmentViewModel
 import ru.dombuketa.database_module.dagger.IDatabaseProvider
 import ru.ansmos.filmoteka.viewmodel.HomeFragmentViewModel
 import ru.ansmos.filmoteka.viewmodel.LaterFragmentViewModel
@@ -14,5 +15,6 @@ interface AppComponent {
 
     fun injHomeFragment(vm: HomeFragmentViewModel)
     fun injLaterFragment(vm: LaterFragmentViewModel)
+    fun injCastsFragment(vm: CastsFragmentViewModel)
     fun injSettingsFragment(vm: SettingsFragmentViewModel)
 }
