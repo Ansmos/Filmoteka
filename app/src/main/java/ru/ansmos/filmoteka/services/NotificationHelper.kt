@@ -1,11 +1,6 @@
 package ru.ansmos.filmoteka.services
 
-import android.app.AlarmManager
-import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -25,7 +20,8 @@ import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.view.MainActivity
 import ru.dombuketa.net_tmdb.ApiConstants
 import java.time.LocalDateTime
-import java.util.Calendar
+import java.time.ZoneId
+import java.util.*
 
 object NotificationHelper {
     const val CHANNEL_ID = "FilmotekaChannel"
@@ -65,23 +61,45 @@ object NotificationHelper {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     //Создаем нотификацию
                     notifBuilder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(resource))
+                    //Обновляем нотификацию
                     notificationManager.notify(film.id.toInt(), notifBuilder.build())
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
-
             })
+        //Отправляем изначальную нотификацию в стандартном исполнении
         notificationManager.notify(film.id.toInt(), notifBuilder.build())
     }
 
-    fun notificationSet(context: Context, film: Film){
+    fun notificationSet(context: Context, filmOrNotification: Any?){
+        if (filmOrNotification == null) return
         val calendar = Calendar.getInstance()
         val curY = calendar.get(Calendar.YEAR)
         val curM = calendar.get(Calendar.MONTH)
         val curD = calendar.get(Calendar.DAY_OF_MONTH)
         val curH = calendar.get(Calendar.HOUR_OF_DAY)
         val curm = calendar.get(Calendar.MINUTE)
+        // Оставлю для примера when с объектом
+        // Вся эта тема связана с тем, что когда нет сети, мы не можем получить фильм, а в БД его может уже не быть
+        // поэтому берем все его данные из нотификации, чтобы напоминание про него все равно пришло
+        // Енсли прислали вообще другой обхект, то выходим из процедуры, ничего не делая.
+        var notification: Notification? = null
+        when (filmOrNotification) {
+            is Film -> {
+                notification = Notification(
+                    id =  0,
+                    filmId = filmOrNotification.id.toInt(),
+                    title = filmOrNotification.title,
+                    poster = filmOrNotification.poster,
+                    notificationTime = LocalDateTime.of(curY, curM, curD, curH, curm),
+                    isActive = true
+                )
+            }
+            is Notification -> notification = filmOrNotification
+            else -> null
+        }
+        if (notification == null) return
 
         DatePickerDialog(context,{
             _, dpdYear, dpdMonth, dayOfMonth ->
@@ -89,15 +107,11 @@ object NotificationHelper {
                 val pickerDateTime = Calendar.getInstance()
                 pickerDateTime.set(dpdYear, dpdMonth, dayOfMonth, hourOfDay, pickerMinute, 0)
                 val dateTimeInMillis = pickerDateTime.timeInMillis
-                interactor.insertNotification(Notification(
-                    id =  0,
-                    filmId = film.id.toInt(),
-                    title = film.title,
-                    poster = film.poster,
-                    notificationTime = LocalDateTime.of(curY, curM, curD, curH, curm),
-                    isActive = true
-                ))
-                createWatchLaterEvent(context, dateTimeInMillis, film)
+                //interactor.insertNotification(notification)
+                val newTime = LocalDateTime.ofInstant(pickerDateTime.toInstant(), pickerDateTime.timeZone.toZoneId())
+                notification.notificationTime = newTime
+                interactor.updateNotification(notification)
+                createWatchLaterEvent(context, dateTimeInMillis, notification.toFilm())
             }
             TimePickerDialog(context, timeSetListener, curH, curm, true).show()
         }, curY, curM, curD).show()

@@ -3,6 +3,7 @@ package ru.dombuketa.database_module.repositories
 import android.app.Notification
 import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import ru.dombuketa.database_module.dao.INotificationDao
 import ru.dombuketa.database_module.dao.ITmdbFilmDao
 import ru.dombuketa.database_module.entity.FilmEntity
@@ -41,9 +42,13 @@ class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao, priv
         return filmDao.getFilmsByPage_Paging(startPosition, loadSize)
     }
 
-// Нотификации
+// Нотификации ********************************************
 
     fun getAllNotifications(): Observable<List<NotificationEntity>> = notificationDao.getAllNotifications()
+
+    fun getNotificationById(id: Int) : Single<NotificationEntity>? {
+        return notificationDao.getNotificationById(id)
+    }
 
     fun insertNotification(notification: NotificationEntity) {
         notificationDao.insertNotification(notification)
@@ -56,7 +61,4 @@ class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao, priv
     }
 
     fun cancelNotification(film_id: Int) = notificationDao.cancelNotification(film_id)
-
-    fun cancelAllNotification() = notificationDao.cancelAllNotifications()
-
 }

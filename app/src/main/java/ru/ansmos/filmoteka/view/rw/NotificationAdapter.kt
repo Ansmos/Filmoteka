@@ -68,6 +68,13 @@ class NotificationAdapter(private val clickListener: IOnItemClicListener) :
         items = list.toMutableList()
     }
 
+    fun removeNotification(position: Int) : Int {
+        val film_id = items[position].filmId
+        items.removeAt(position)
+        notifyItemRemoved(position)
+        return film_id //Возвращаем для удаления из БД
+    }
+
     //Интерфейс для обработки кликов
     //actionSet - true Измеить настройку, иначе открыть карточку фильма
     interface IOnItemClicListener{

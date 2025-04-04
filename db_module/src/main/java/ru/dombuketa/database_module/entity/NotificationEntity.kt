@@ -1,13 +1,14 @@
 package ru.dombuketa.database_module.entity
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "notifications")
+@Entity(tableName = "notifications", indices = [Index(
+    value = ["film_id"],
+    unique = true
+)])
 data class NotificationEntity (
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "film_id") val filmId: Int,

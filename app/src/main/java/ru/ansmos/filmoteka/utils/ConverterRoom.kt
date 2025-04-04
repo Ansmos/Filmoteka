@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 object ConverterRoom {
 
-    fun convertliveEntityToFilms(list: LiveData<List<ru.dombuketa.database_module.entity.FilmEntity>>): LiveData<List<Film>> {
+    fun convertliveEntityToFilmList(list: LiveData<List<ru.dombuketa.database_module.entity.FilmEntity>>): LiveData<List<Film>> {
         val result = Transformations.map(list){ filmEntityList ->
             val filmList = arrayListOf<Film>()
             filmEntityList.forEach {
@@ -25,7 +25,7 @@ object ConverterRoom {
         return result
     }
 
-    fun convertFlowEntityToFilms(list: Flow<List<ru.dombuketa.database_module.entity.FilmEntity>>): Flow<List<Film>> {
+    fun convertFlowEntityToFilmList(list: Flow<List<ru.dombuketa.database_module.entity.FilmEntity>>): Flow<List<Film>> {
         val result = list.map {
              filmEntityList ->
                 val filmList = arrayListOf<Film>()
@@ -37,14 +37,14 @@ object ConverterRoom {
         return result
     }
 
-    fun convertPagingEntityToFilms(list: DataSource.Factory<Int, FilmEntity>): DataSource.Factory<Int, Film> {
+    fun convertPagingEntityToFilmList(list: DataSource.Factory<Int, FilmEntity>): DataSource.Factory<Int, Film> {
         return list.map {
                 convertEntityToFilm(it)
         }
     }
 
 
-    fun convertRxEntityToFilms(list: Observable<List<FilmEntity>>): Observable<List<Film>> {
+    fun convertRxEntityToFilmList(list: Observable<List<FilmEntity>>): Observable<List<Film>> {
         val result = list.map {
                 filmEntityList ->
             val filmList = arrayListOf<Film>()
@@ -56,7 +56,7 @@ object ConverterRoom {
         return result
     }
 
-    fun convertEntityToFilms(list: List<FilmEntity>?): List<Film> {
+    fun convertEntityToFilmList(list: List<FilmEntity>?): List<Film> {
         val result = mutableListOf<Film>()
         list?.forEach {
             result.add(convertEntityToFilm(it))
@@ -75,7 +75,7 @@ object ConverterRoom {
         )
     }
 
-    fun convertFilmsToEntity(list: List<Film>?): List<FilmEntity> {
+    fun convertFilmListToEntity(list: List<Film>?): List<FilmEntity> {
         val result = mutableListOf<FilmEntity>()
         list?.forEach {
             result.add( convertFilmToEntity(it))
@@ -136,16 +136,18 @@ object ConverterRoom {
         } else return Observable.just(null)
     }
 
-    private fun convertEntityToNotification(notificationEntity: NotificationEntity): Notification {
-        return Notification(
-            id = notificationEntity.id,
-            filmId = notificationEntity.filmId,
-            title = notificationEntity.title,
-            poster = notificationEntity.poster,
-            isActive = notificationEntity.isActive,
-            notificationTime = LocalDateTime.of(notificationEntity.startYear, notificationEntity.startMonth,
-                notificationEntity.startDay, notificationEntity.startHour, notificationEntity.startMinute)
-        )
+    fun convertEntityToNotification(notificationEntity: NotificationEntity?) : Notification? {
+        if (notificationEntity != null) {
+            return Notification(
+                id = notificationEntity.id,
+                filmId = notificationEntity.filmId,
+                title = notificationEntity.title,
+                poster = notificationEntity.poster,
+                isActive = notificationEntity.isActive,
+                notificationTime = LocalDateTime.of(notificationEntity.startYear, notificationEntity.startMonth,
+                    notificationEntity.startDay, notificationEntity.startHour, notificationEntity.startMinute)
+            )
+        } else return null
     }
 
 }
