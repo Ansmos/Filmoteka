@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
+import ru.dombuketa.database_module.dao.INotificationDao
 import ru.dombuketa.database_module.dao.ITmdbFilmDao
 import ru.dombuketa.database_module.db.AppDatabase
 import ru.dombuketa.database_module.db.DatabaseHelper
@@ -23,7 +24,12 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideRepository(filmDao: ITmdbFilmDao) =
-        MainRepository(filmDao)
+    fun provideNotificationDao(context: Context) = Room.databaseBuilder(context, AppDatabase::class.java, "films.db")
+        .build().notificationDao()
+
+    @Singleton
+    @Provides
+    fun provideRepository(filmDao: ITmdbFilmDao, notificationDao: INotificationDao) =
+        MainRepository(filmDao, notificationDao)
 }
 

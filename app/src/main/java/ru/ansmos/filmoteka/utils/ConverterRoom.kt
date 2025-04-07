@@ -8,10 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.dombuketa.database_module.entity.FilmEntity
 import ru.ansmos.filmoteka.bll.Film
+import ru.ansmos.filmoteka.bll.Notification
+import ru.dombuketa.database_module.entity.NotificationEntity
+import java.time.LocalDateTime
 
 object ConverterRoom {
 
-    fun convertliveEntityToFilms(list: LiveData<List<ru.dombuketa.database_module.entity.FilmEntity>>): LiveData<List<Film>> {
+    fun convertliveEntityToFilmList(list: LiveData<List<ru.dombuketa.database_module.entity.FilmEntity>>): LiveData<List<Film>> {
         val result = Transformations.map(list){ filmEntityList ->
             val filmList = arrayListOf<Film>()
             filmEntityList.forEach {
@@ -22,7 +25,7 @@ object ConverterRoom {
         return result
     }
 
-    fun convertFlowEntityToFilms(list: Flow<List<ru.dombuketa.database_module.entity.FilmEntity>>): Flow<List<Film>> {
+    fun convertFlowEntityToFilmList(list: Flow<List<ru.dombuketa.database_module.entity.FilmEntity>>): Flow<List<Film>> {
         val result = list.map {
              filmEntityList ->
                 val filmList = arrayListOf<Film>()
@@ -34,14 +37,14 @@ object ConverterRoom {
         return result
     }
 
-    fun convertPagingEntityToFilms(list: DataSource.Factory<Int, FilmEntity>): DataSource.Factory<Int, Film> {
+    fun convertPagingEntityToFilmList(list: DataSource.Factory<Int, FilmEntity>): DataSource.Factory<Int, Film> {
         return list.map {
                 convertEntityToFilm(it)
         }
     }
 
 
-    fun convertRxEntityToFilms(list: Observable<List<ru.dombuketa.database_module.entity.FilmEntity>>): Observable<List<Film>> {
+    fun convertRxEntityToFilmList(list: Observable<List<FilmEntity>>): Observable<List<Film>> {
         val result = list.map {
                 filmEntityList ->
             val filmList = arrayListOf<Film>()
@@ -53,7 +56,7 @@ object ConverterRoom {
         return result
     }
 
-    fun convertEntityToFilms(list: List<ru.dombuketa.database_module.entity.FilmEntity>?): List<Film> {
+    fun convertEntityToFilmList(list: List<FilmEntity>?): List<Film> {
         val result = mutableListOf<Film>()
         list?.forEach {
             result.add(convertEntityToFilm(it))
@@ -61,7 +64,7 @@ object ConverterRoom {
         return result
     }
 
-    private fun convertEntityToFilm(filmEntity: ru.dombuketa.database_module.entity.FilmEntity): Film {
+    private fun convertEntityToFilm(filmEntity: FilmEntity): Film {
         return Film(
             id = filmEntity.id_tmdb.toString(),
             title = filmEntity.title,
@@ -72,16 +75,16 @@ object ConverterRoom {
         )
     }
 
-    fun convertFilmsToEntity(list: List<Film>?): List<ru.dombuketa.database_module.entity.FilmEntity> {
-        val result = mutableListOf<ru.dombuketa.database_module.entity.FilmEntity>()
+    fun convertFilmListToEntity(list: List<Film>?): List<FilmEntity> {
+        val result = mutableListOf<FilmEntity>()
         list?.forEach {
             result.add( convertFilmToEntity(it))
         }
         return result
     }
 
-    fun convertFilmToEntity(film: Film): ru.dombuketa.database_module.entity.FilmEntity {
-        return ru.dombuketa.database_module.entity.FilmEntity(
+    fun convertFilmToEntity(film: Film): FilmEntity {
+        return FilmEntity(
             id = 0,
             id_tmdb = film.id.toInt(),
             title = film.title,
@@ -91,4 +94,60 @@ object ConverterRoom {
             release_date = film.releaseDate
         )
     }
+
+// Конвертеры для Notifications
+
+    fun convertNotificationsToEntity(list: Observable<List<Notification>>): Observable<List<NotificationEntity>> {
+        val result = list.map { notificationEntityList ->
+            val notificationList = arrayListOf<NotificationEntity>()
+            notificationEntityList.forEach {
+                convertNotificationToEntity(it)?.let { it1 -> notificationList.add(it1) }
+            }
+            return@map notificationList.toList()
+        }
+        return result
+    }
+
+    fun convertNotificationToEntity(notification: Notification): NotificationEntity {
+        return NotificationEntity(
+            id = notification.id,
+            filmId = notification.filmId,
+            title = notification.title,
+            poster = notification.poster,
+            startYear = notification.notificationTime.year,
+            startMonth = notification.notificationTime.monthValue,
+            startDay = notification.notificationTime.dayOfMonth,
+            startHour = notification.notificationTime.hour,
+            startMinute = notification.notificationTime.minute,
+            isActive = notification.isActive,
+        )
+    }
+
+    fun convertRxEntityToNotifications(list: Observable<List<NotificationEntity>>?): Observable<List<Notification>> {
+        if (list != null) {
+            val result = list.map { notificationsEntityList ->
+                val notificationsList = arrayListOf<Notification>()
+                notificationsEntityList.forEach {
+                    convertEntityToNotification(it)?.let { it1 -> notificationsList.add(it1) }
+                }
+                return@map notificationsList.toList()
+            }
+            return result
+        } else return Observable.just(null)
+    }
+
+    fun convertEntityToNotification(notificationEntity: NotificationEntity?) : Notification? {
+        if (notificationEntity != null) {
+            return Notification(
+                id = notificationEntity.id,
+                filmId = notificationEntity.filmId,
+                title = notificationEntity.title,
+                poster = notificationEntity.poster,
+                isActive = notificationEntity.isActive,
+                notificationTime = LocalDateTime.of(notificationEntity.startYear, notificationEntity.startMonth,
+                    notificationEntity.startDay, notificationEntity.startHour, notificationEntity.startMinute)
+            )
+        } else return null
+    }
+
 }

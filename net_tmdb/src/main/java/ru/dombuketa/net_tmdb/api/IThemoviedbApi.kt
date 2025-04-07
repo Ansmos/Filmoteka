@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.dombuketa.net_tmdb.imp.TmdbFilmDTO
 import ru.dombuketa.net_tmdb.imp.TmdbFilmListDTO
 
 interface IThemoviedbApi {
@@ -38,4 +39,11 @@ interface IThemoviedbApi {
         @Query("language") language: String,
         @Query("page") page: Int
     ) : Single<TmdbFilmListDTO>
+
+    @GET("3/movie/{id}")
+    fun getFilm(
+        @Path("id") category: Int,
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String,
+    ): Observable<TmdbFilmDTO>
 }

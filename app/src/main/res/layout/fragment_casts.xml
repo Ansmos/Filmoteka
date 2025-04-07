@@ -2,13 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/casts_fragment_root"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@drawable/background_casts_fragment"
     tools:visibility="visible"
-
     tools:context=".view.fragments.CastsFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/casts_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/film_item"
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>

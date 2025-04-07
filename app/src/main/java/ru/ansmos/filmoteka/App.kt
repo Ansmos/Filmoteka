@@ -1,13 +1,11 @@
 package ru.ansmos.filmoteka
 
 import android.app.Application
-import android.app.NotificationManager
 import android.content.Context
-import androidx.core.content.ContextCompat.getSystemService
 import ru.ansmos.filmoteka.dagger.AppComponent
 import ru.ansmos.filmoteka.dagger.DaggerAppComponent
 import ru.ansmos.filmoteka.dagger.DomainModule
-import ru.ansmos.filmoteka.services.Notification
+import ru.ansmos.filmoteka.services.NotificationHelper
 import ru.dombuketa.database_module.dagger.DaggerIDatabaseComponent
 import ru.dombuketa.database_module.dagger.IContextProvider
 import ru.dombuketa.net_tmdb.dagger.DaggerITmdbComponent
@@ -33,7 +31,7 @@ class App : Application(), IContextProvider {
             .domainModule(DomainModule(this))
             .build()
         //Создаем канал
-        Notification.createChannel(this)
+        NotificationHelper.createChannel(this)
     }
 
     companion object{

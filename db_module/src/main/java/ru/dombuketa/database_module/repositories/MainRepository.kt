@@ -1,13 +1,17 @@
 package ru.dombuketa.database_module.repositories
 
+import android.app.Notification
 import androidx.paging.DataSource
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import ru.dombuketa.database_module.dao.INotificationDao
 import ru.dombuketa.database_module.dao.ITmdbFilmDao
 import ru.dombuketa.database_module.entity.FilmEntity
+import ru.dombuketa.database_module.entity.NotificationEntity
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao)  {
+class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao, private val notificationDao: INotificationDao)  {
 
     fun putFilms(films: List<FilmEntity>) {
         //Запросы в БД должны быть в отдельном потоке
@@ -37,4 +41,24 @@ class MainRepository @Inject constructor(private val filmDao: ITmdbFilmDao)  {
     fun getDataPDS(startPosition: Int, loadSize: Int): DataSource.Factory<Int, FilmEntity> {
         return filmDao.getFilmsByPage_Paging(startPosition, loadSize)
     }
+
+// Нотификации ********************************************
+
+    fun getAllNotifications(): Observable<List<NotificationEntity>> = notificationDao.getAllNotifications()
+
+    fun getNotificationById(id: Int) : Single<NotificationEntity>? {
+        return notificationDao.getNotificationById(id)
+    }
+
+    fun insertNotification(notification: NotificationEntity) {
+        notificationDao.insertNotification(notification)
+    }
+
+    fun updateNotification(notification: NotificationEntity) {
+        // Для упрощения деактивирую старый и вставляю новый
+        notificationDao.cancelNotification(notification.filmId)
+        notificationDao.insertNotification(notification)
+    }
+
+    fun cancelNotification(film_id: Int) = notificationDao.cancelNotification(film_id)
 }
