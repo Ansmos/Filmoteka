@@ -12,6 +12,7 @@ import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.bll.Film
 import ru.ansmos.filmoteka.domain.InteractorTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -59,8 +60,12 @@ class CastsFragmentViewModel : ViewModel() {
         interactor.getFilmsFromApiRx()
     }
 
+    fun getEvaluatePeriodState() : Boolean = Date().time - interactor.getStartAppTimeFromPreferences() < TIME_EVALUATE_PERIOD
+
     companion object{
         const val TIME_TO_PURGE_CACH = 600000_000L //Время существование кеша, после удаление из БД в мс
         const val PAGE_SIZE_FROM_DB = 10
+
+        private const val TIME_EVALUATE_PERIOD = 60000L //Минута
     }
 }
