@@ -11,10 +11,12 @@ import ru.ansmos.filmoteka.bll.*
 import ru.ansmos.filmoteka.utils.ConverterRoom
 import ru.ansmos.filmoteka.utils.ConverterTmdb
 import ru.ansmos.filmoteka.utils.PreferenceProvider
+import ru.dombuketa.database_module.repositories.MainRepository
 import ru.dombuketa.net_tmdb.ApiKey
+import ru.dombuketa.net_tmdb.api.IThemoviedbApi
 import java.util.concurrent.Executors
 
-class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories.MainRepository, private val retrofitService: ru.dombuketa.net_tmdb.api.IThemoviedbApi, private val preferences: PreferenceProvider) {
+class InteractorTmdb(private val repo: MainRepository, private val retrofitService: IThemoviedbApi, private val preferences: PreferenceProvider) {
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     var isProgressBarVisible = BehaviorSubject.create<Boolean>()
@@ -125,6 +127,10 @@ class InteractorTmdb(private val repo: ru.dombuketa.database_module.repositories
                 println("!!! ОШИБКА: Нотификация не отменена БД" + it.message)
             })
     }
+
+    // Для определения конца бесплатного периода. Не люблю я это(
+    fun getStartAppTimeFromPreferences() = preferences.getStartTimeApp()
+    fun setStartAppTimeToPreferences(time: Long) = preferences.setStartTimeApp(time)
 
     companion object{
         const val LANGUAGE = "ru-RU"

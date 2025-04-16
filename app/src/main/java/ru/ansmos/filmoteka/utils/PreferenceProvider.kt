@@ -61,6 +61,9 @@ class PreferenceProvider(context: Context) {
         return preference.getLong(LAST_SUCCESS_UPLOAD, System.currentTimeMillis())
     }
 
+    // Для определения конца бесплатного периода. Не люблю я это(
+    fun getStartTimeApp(): Long = preference.getLong(LAST_TIME_START_APP, Date().time)
+    fun setStartTimeApp(time: Long) = preference.edit().putLong(LAST_TIME_START_APP, time).apply()
 
     companion object {
         private const val KEY_FIRST_LAUNCH = "first_launch"
@@ -68,5 +71,7 @@ class PreferenceProvider(context: Context) {
         private const val DEF_CATEGORY = "popular"
 
         private const val LAST_SUCCESS_UPLOAD = "last_success_upload"
+        // Для определения конца бесплатного периода. Не люблю я это(
+        private const val LAST_TIME_START_APP = "last_time_start_app"
     }
 }

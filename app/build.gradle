@@ -40,6 +40,32 @@ android {
         jvmTarget = '1.8'
     }
 
+    flavorDimensions "version"
+
+    productFlavors {
+        pro {
+            dimension "version"
+            applicationIdSuffix ".pro"
+            versionNameSuffix "-pro"
+        }
+        free {
+            dimension "version"
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
+        }
+    }
+    sourceSets {
+        pro {
+            java {
+                srcDirs 'src\\pro\\java'
+            }
+        }
+        free {
+            java {
+                srcDirs 'src\\free\\java'
+            }
+        }
+    }
 
 }
 

@@ -9,6 +9,7 @@ import ru.ansmos.filmoteka.services.NotificationHelper
 import ru.dombuketa.database_module.dagger.DaggerIDatabaseComponent
 import ru.dombuketa.database_module.dagger.IContextProvider
 import ru.dombuketa.net_tmdb.dagger.DaggerITmdbComponent
+import java.util.*
 
 class App : Application(), IContextProvider {
     lateinit var repo: ru.dombuketa.database_module.repositories.MainRepository
@@ -32,6 +33,8 @@ class App : Application(), IContextProvider {
             .build()
         //Создаем канал
         NotificationHelper.createChannel(this)
+        //52 Запомним последний запуск
+        dagger.getInteractor().setStartAppTimeToPreferences(Date().time)  //52*
     }
 
     companion object{
