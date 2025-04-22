@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
+    <ru.ansmos.filmoteka.view.custom.Promo
+        android:id="@+id/promo_view_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:translationZ="10dp"
+        android:visibility="gone" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_anim"
         android:layout_width="match_parent"
