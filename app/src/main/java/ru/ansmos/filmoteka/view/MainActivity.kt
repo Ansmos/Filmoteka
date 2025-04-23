@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.ansmos.filmoteka.App
 import ru.ansmos.filmoteka.R
 import ru.ansmos.filmoteka.databinding.ActivityMainBinding
@@ -76,31 +78,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPromo() {
-        if (!App.instance.isPromoShow){
+        if (!App.instance.isPromoShow) {
             val remoteConfig = FirebaseRemoteConfig.getInstance()
             val settings = FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(0).build()
             remoteConfig.setConfigSettingsAsync(settings)
             // Метод получения данных с сервера
             remoteConfig.fetch().addOnCompleteListener {
-                if (it.isSuccessful){
+                if (it.isSuccessful) {
                     //активируем последний полученный конфиг с сервера
                     remoteConfig.activate()
                     //Получаем ссылку
                     val link = remoteConfig.getString("film_link")
-                    if (link.isNotBlank()){
-                        App.instance.isPromoShow = true
-                        //Включаем верстку
-                        binding.promoViewGroup?.apply {
-                            visibility = View.VISIBLE
-                            //анимируем
-                            animate().setDuration(1500).alpha(1f).start()
-                            //Загружаем постер
-                            setLinkForPoster(link)
-                            btn.setOnClickListener {
-                                visibility = View.GONE
-                            }
-                        }
+                    val filmId = remoteConfig.getString("film_id")
+                    //если значение пришло, но нет фильма или нет инета, промо не отобразится
+                    if (filmId.isNotBlank()) {
+                        App.instance.dagger.getInteractor().getFilmFromAPI(filmId.toInt())
+                            //.subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({ film ->
+                                App.instance.isPromoShow = true
+                                //Включаем верстку
+                                binding.promoViewGroup?.apply {
+                                    visibility = View.VISIBLE
+                                    //анимируем
+                                    animate().setDuration(1500).alpha(1f).start()
+                                    //Загружаем постер
+                                    setLinkForPoster(film.poster)
+                                    btn.setOnClickListener {
+                                        launchDetailsFragment(film)
+                                        visibility = View.GONE
+                                    }
+                                }
+                            }, {
+                                it.printStackTrace()
+                            })
                     }
                 }
             }
