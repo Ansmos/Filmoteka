@@ -14,7 +14,7 @@ import java.util.*
 class App : Application(), IContextProvider {
     lateinit var repo: ru.dombuketa.database_module.repositories.MainRepository
     lateinit var dagger: AppComponent
-
+    var isPromoShow = false
 
     override fun onCreate() {
         super.onCreate()
